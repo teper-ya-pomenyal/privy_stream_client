@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { useBrowse, useLibrary } from '../api/queries';
 import { useMobile } from '../lib/useMobile';
 import { IS_WEB } from '../platform/mode';
@@ -66,7 +66,9 @@ function Header() {
   return (
     <header className={s.header}>
       <div className={s.headerLeft}>
-        <Logo small />
+        <Link to="/catalog" className={s.home} aria-label="На главную">
+          <Logo small />
+        </Link>
         <div className={s.crumbs}>{crumbs}</div>
         <button
           type="button"

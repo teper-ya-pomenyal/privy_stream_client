@@ -40,6 +40,14 @@
 .headerRight {
   gap: 10px;
 }
+.home {
+  color: inherit;
+  text-decoration: none;
+  flex: none;
+}
+.home:hover {
+  opacity: 0.8;
+}
 .crumbs {
   font: 400 10px/1 var(--font-mono);
   color: var(--text-6);

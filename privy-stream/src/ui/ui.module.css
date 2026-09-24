@@ -134,6 +134,29 @@
   border-color: var(--line-hover);
 }
 
+/* Пароль с кнопкой-глазом */
+.passWrap {
+  position: relative;
+}
+.passInput {
+  padding-right: 44px;
+}
+.eye {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-5);
+}
+.eye:hover,
+.eye[aria-pressed='true'] {
+  color: var(--text-2);
+}
+
 /* Выпадающие списки даты: день · месяц · год */
 .dateRow {
   display: grid;

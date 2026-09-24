@@ -1,4 +1,11 @@
-import type { ButtonHTMLAttributes, CSSProperties, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from 'react';
+import {
+  useState,
+  type ButtonHTMLAttributes,
+  type CSSProperties,
+  type InputHTMLAttributes,
+  type ReactNode,
+  type SelectHTMLAttributes,
+} from 'react';
 import type { NodeInfo, Track } from '../api';
 import { fmtTime, trackNum } from '../lib/format';
 import { useCurrentTrack } from '../store/player';
@@ -39,6 +46,35 @@ export function Field({ label, ...input }: InputHTMLAttributes<HTMLInputElement>
     <label className={s.field}>
       <span className="t-label">{label}</span>
       <input className={s.input} spellCheck={false} autoComplete="off" {...input} />
+    </label>
+  );
+}
+
+/** Поле пароля с кнопкой-глазом: показать введённое, чтобы проверить опечатки. */
+export function PasswordField({ label, ...input }: Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & { label: string }) {
+  const [shown, setShown] = useState(false);
+  return (
+    <label className={s.field}>
+      <span className="t-label">{label}</span>
+      <div className={s.passWrap}>
+        <input className={cx(s.input, s.passInput)} type={shown ? 'text' : 'password'} spellCheck={false} autoComplete="off" {...input} />
+        <button
+          type="button"
+          className={s.eye}
+          aria-label={shown ? 'Скрыть пароль' : 'Показать пароль'}
+          aria-pressed={shown}
+          title={shown ? 'Скрыть пароль' : 'Показать пароль'}
+          // Фокус и курсор остаются в поле
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => setShown((v) => !v)}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+            <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" />
+            <circle cx="12" cy="12" r="3" />
+            {!shown && <path d="M4 20 20 4" />}
+          </svg>
+        </button>
+      </div>
     </label>
   );
 }

@@ -14,6 +14,7 @@ import {
   hostLabel,
   isoDate,
   Logo,
+  PasswordField,
   NODE_STATUS,
   nodeState,
   PrefixedInput,
@@ -144,7 +145,7 @@ export function Auth() {
             <div className={s.divider} />
 
             <Field label="ЛОГИН" value={login} onChange={edit(setLogin)} placeholder="user_name" autoFocus={!noNodes && !mobile} />
-            <Field label="ПАРОЛЬ" type="password" value={pass} onChange={edit(setPass)} placeholder="••••••••••" />
+            <PasswordField label="ПАРОЛЬ" value={pass} onChange={edit(setPass)} placeholder="••••••••••" />
             {reg && (
               <DateField
                 label="ДАТА РОЖДЕНИЯ"

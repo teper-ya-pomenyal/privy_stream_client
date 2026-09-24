@@ -64,7 +64,7 @@ export function Auth() {
     if (node.status !== 'online') return setErr(`503 · узел ${node.host} не отвечает`);
     // Проверки из контракта API v1 (RegisterRequest / AuthRequest) — до запроса.
     if (!login.trim()) return setErr('400 · укажи логин');
-    if (reg && pass.length < 11) return setErr('400 · пароль: минимум 11 символов');
+    if (reg && pass.length < 8) return setErr('400 · пароль: минимум 8 символов');
     if (reg && !SPECIAL_CHAR.test(pass)) return setErr('400 · пароль: нужен хотя бы один спецсимвол (!@#$% и т.п.)');
     if (reg && pass2 !== pass) return setErr('400 · пароли не совпадают');
     const birthDate = isoDate(birth);

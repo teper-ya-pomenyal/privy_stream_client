@@ -91,7 +91,7 @@ const REGISTER_ERRORS: Record<string, string> = {
   login_too_long: 'логин: максимум 20 символов',
   login_invalid_characters: 'логин: только латиница, цифры и . _ -, без двух спецсимволов подряд',
   password_required: 'пароль: укажи пароль',
-  password_too_short: 'пароль: минимум 11 символов',
+  password_too_short: 'пароль: минимум 8 символов',
   password_too_long: 'пароль: максимум 128 символов',
   password_missing_special: 'пароль: нужен хотя бы один спецсимвол (!@#$% и т.п.)',
   birth_date_required: 'дата рождения: укажи дату',

@@ -9,7 +9,7 @@ import { useActiveNode } from '../store/servers';
 import { Button, Cover, EmptyState, ErrorNote, hostLabel, PrefixedInput, Screen, ScreenHeader, Skeleton, TrackTable } from '../ui';
 import s from './screens.module.css';
 
-const FILTERS = ['ВСЁ', 'АРТИСТЫ', 'РЕЛИЗЫ', 'ТРЕКИ', 'ЗАПРЕЩЁННОЕ ГДЕ-ТО'] as const;
+const FILTERS = ['ВСЁ', 'АРТИСТЫ', 'РЕЛИЗЫ', 'ТРЕКИ'] as const;
 type Filter = (typeof FILTERS)[number];
 
 export function Catalog() {
@@ -53,15 +53,14 @@ function CatalogView({ host, name }: { host: string; name: string }) {
   const active = searching ? search : browse;
 
   const result = useMemo(() => {
-    const onlyFlagged = filter === 'ЗАПРЕЩЁННОЕ ГДЕ-ТО';
-    const show = (section: Filter) => filter === 'ВСЁ' || filter === section || (onlyFlagged && section !== 'АРТИСТЫ');
+    const show = (section: Filter) => filter === 'ВСЁ' || filter === section;
     const res: SearchResult & { releases: Release[] } = searching
       ? { ...(search.data ?? { artists: [], tracks: [] }), releases: releasesOf(search.data?.tracks ?? []) }
       : { artists: [], tracks: [], releases: browse.data ?? [] };
     return {
       artists: show('АРТИСТЫ') ? res.artists : [],
-      releases: show('РЕЛИЗЫ') ? res.releases.filter((r) => !onlyFlagged || r.flagged) : [],
-      tracks: show('ТРЕКИ') ? res.tracks.filter((t) => !onlyFlagged || t.explicit) : [],
+      releases: show('РЕЛИЗЫ') ? res.releases : [],
+      tracks: show('ТРЕКИ') ? res.tracks : [],
     };
   }, [searching, search.data, browse.data, filter]);
 

@@ -15,6 +15,8 @@ export function AudioEngine() {
   const track = useCurrentTrack();
   const playing = usePlayer((p) => p.playing);
   const seekNonce = usePlayer((p) => p.seekNonce);
+  const volume = usePlayer((p) => p.volume);
+  const muted = usePlayer((p) => p.muted);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [source, setSource] = useState<Source>({ kind: 'pending' });
 
@@ -68,6 +70,15 @@ export function AudioEngine() {
     if (source.kind !== 'audio' || !audio) return;
     audio.currentTime = usePlayer.getState().position;
   }, [seekNonce, source]);
+
+  // Поток: громкость. Квадрат положения регулятора — на слух ход равномернее линейного.
+  // В iOS Safari audio.volume только для чтения, работает лишь muted.
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (source.kind !== 'audio' || !audio) return;
+    audio.volume = volume * volume;
+    audio.muted = muted;
+  }, [volume, muted, source]);
 
   // Без потока: часы
   useEffect(() => {

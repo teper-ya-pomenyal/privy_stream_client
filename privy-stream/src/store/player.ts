@@ -19,6 +19,9 @@ interface PlayerState {
   loading: boolean;
   /** Ошибка стрима в формате «код · сообщение» */
   error: string;
+  /** Положение регулятора громкости 0–1; громкость <audio> — его квадрат (см. AudioEngine). */
+  volume: number;
+  muted: boolean;
 
   setQueue: (queue: Track[]) => void;
   /** Начать трек; если передан список — он становится очередью. */
@@ -30,6 +33,8 @@ interface PlayerState {
   tick: (position: number) => void;
   setMedia: (patch: Partial<Pick<PlayerState, 'mediaDuration' | 'loading' | 'error' | 'playing'>>) => void;
   setFullscreen: (open: boolean) => void;
+  setVolume: (volume: number) => void;
+  toggleMute: () => void;
 }
 
 export const usePlayer = create<PlayerState>()(
@@ -45,6 +50,8 @@ export const usePlayer = create<PlayerState>()(
       mediaDuration: 0,
       loading: false,
       error: '',
+      volume: 1,
+      muted: false,
 
       setQueue: (queue) => set({ queue, index: 0, position: 0 }),
 
@@ -88,10 +95,15 @@ export const usePlayer = create<PlayerState>()(
       setMedia: (patch) => set(patch),
 
       setFullscreen: (fullscreen) => set({ fullscreen }),
+
+      // Движение регулятора снимает «без звука», как в системных плеерах.
+      setVolume: (volume) => set({ volume: Math.max(0, Math.min(1, volume)), muted: false }),
+
+      toggleMute: () => set((s) => ({ muted: !s.muted })),
     }),
     {
       name: 'privy.player',
-      partialize: (s) => ({ queue: s.queue, index: s.index, position: s.position }),
+      partialize: (s) => ({ queue: s.queue, index: s.index, position: s.position, volume: s.volume, muted: s.muted }),
     },
   ),
 );

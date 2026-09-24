@@ -1,4 +1,4 @@
-import { useEffect, useState, type MouseEvent } from 'react';
+import { useEffect, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
 import type { Track } from '../api';
 import { fmtTime } from '../lib/format';
 import { meterHeights } from '../lib/viz';
@@ -57,6 +57,7 @@ export function PlayerBar() {
       </div>
 
       <div className={s.right}>
+        <VolumeControl />
         <div className={s.meter}>
           {meterHeights(tick, playing && !loading).map((h, i) => (
             <div key={i} className={s.meterBar} style={{ height: `${h}%`, background: i > 10 ? 'var(--accent)' : 'var(--line-hover)' }} />
@@ -67,6 +68,64 @@ export function PlayerBar() {
           <br />
           NO LOG
         </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Громкость: кнопка «без звука» и полоса-регулятор (тянуть, клик, стрелки, колесо).
+ * На телефоне полоса скрыта CSS — в iOS громкость меняется только кнопками устройства.
+ */
+export function VolumeControl() {
+  // Точечные селекторы: весь стор меняется на каждом тике позиции.
+  const volume = usePlayer((p) => p.volume);
+  const muted = usePlayer((p) => p.muted);
+  const setVolume = usePlayer((p) => p.setVolume);
+  const toggleMute = usePlayer((p) => p.toggleMute);
+  const level = muted ? 0 : volume;
+
+  const drag = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.buttons !== 1) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setVolume(pointerFraction(e));
+  };
+  const onKey = (e: KeyboardEvent) => {
+    const step = { ArrowRight: 0.05, ArrowUp: 0.05, ArrowLeft: -0.05, ArrowDown: -0.05 }[e.key];
+    if (step === undefined) return;
+    e.preventDefault();
+    setVolume(level + step);
+  };
+
+  return (
+    <div className={s.volume}>
+      <button type="button" className={s.volBtn} onClick={toggleMute} aria-label={muted ? 'Включить звук' : 'Выключить звук'}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+          <path d="M4 9h4l5-4v14l-5-4H4z" />
+          {level === 0 ? (
+            <path d="m16 9 6 6m0-6-6 6" />
+          ) : (
+            <>
+              <path d="M16 9.5a3.5 3.5 0 0 1 0 5" />
+              {level > 0.5 && <path d="M18.5 7a7 7 0 0 1 0 10" />}
+            </>
+          )}
+        </svg>
+      </button>
+      <div
+        className={s.volBar}
+        role="slider"
+        tabIndex={0}
+        aria-label="Громкость"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(level * 100)}
+        onPointerDown={drag}
+        onPointerMove={drag}
+        onKeyDown={onKey}
+        onWheel={(e) => setVolume(level - Math.sign(e.deltaY) * 0.05)}
+      >
+        <div className={s.volFill} style={{ width: `${level * 100}%` }} />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { wavePeaks } from '../lib/viz';
 import { useCurrentTrack, useDuration, usePlayer } from '../store/player';
 import { useActiveNode } from '../store/servers';
 import { Button, Cover, cx, TextLink } from '../ui';
-import { playGlyph, pointerFraction } from './PlayerBar';
+import { playGlyph, pointerFraction, VolumeControl } from './PlayerBar';
 import s from './layout.module.css';
 
 const PEAKS = wavePeaks();
@@ -90,6 +90,7 @@ export function FullPlayer() {
                 СЛУЧАЙНО
               </Button>
             </div>
+            <VolumeControl />
           </div>
         </div>
 

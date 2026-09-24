@@ -165,10 +165,20 @@
   border-top: 1px solid var(--line-ctrl);
   background: var(--bg-player);
   display: grid;
-  grid-template-columns: 264px 1fr 264px;
+  /* Боковые колонки равны — транспорт остаётся по центру. Справа: громкость, индикатор, формат. */
+  grid-template-columns: 300px 1fr 300px;
   align-items: center;
   gap: 18px;
   padding: 0 18px;
+}
+/* Узкое окно браузера: убираем декоративный индикатор, колонки сужаются */
+@media (max-width: 1000px) {
+  .player {
+    grid-template-columns: 220px 1fr 220px;
+  }
+  .player .meter {
+    display: none;
+  }
 }
 .nowPlaying {
   display: flex;
@@ -281,6 +291,45 @@
   color: var(--text-4);
   letter-spacing: 0.12em;
   text-align: right;
+}
+
+/* ---------- Volume ---------- */
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.volBtn {
+  display: flex;
+  color: var(--text-3);
+}
+.volBtn:hover {
+  color: var(--text);
+}
+.volBar {
+  position: relative;
+  width: 64px;
+  height: 4px;
+  background: var(--line-ctrl);
+  cursor: pointer;
+  touch-action: none;
+}
+/* Увеличенная зона захвата, как у полосы прогресса */
+.volBar::before {
+  content: '';
+  position: absolute;
+  inset: -8px 0;
+}
+.volFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--text-3);
+}
+.volBar:hover .volFill,
+.volBar:focus-visible .volFill {
+  background: var(--accent);
 }
 
 /* ---------- Fullscreen player ---------- */
@@ -590,6 +639,10 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 16px;
+  }
+  /* iOS не даёт менять громкость из JS — остаётся только «без звука» */
+  .volBar {
+    display: none;
   }
   .fullExtra {
     margin-left: 0;

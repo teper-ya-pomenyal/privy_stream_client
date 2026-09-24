@@ -829,3 +829,79 @@
     font-size: 34px;
   }
 }
+
+/* Требования к логину и паролю при регистрации: окно слева от карточки */
+.reqAnchor {
+  position: relative;
+}
+.reqs {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 26px + 18px);
+  z-index: 5;
+  width: 264px;
+  padding: 14px 16px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  background: var(--bg-card);
+  border: 1px solid var(--line-input);
+}
+/* Стрелка к полю */
+.reqs::after {
+  content: '';
+  position: absolute;
+  top: 30px;
+  right: -6px;
+  width: 10px;
+  height: 10px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--line-input);
+  border-right: 1px solid var(--line-input);
+  transform: rotate(45deg);
+}
+.reqsTitle {
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.18em;
+  color: var(--text-4);
+}
+.reqsList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.req {
+  display: flex;
+  gap: 9px;
+  font: 400 12px/1.4 var(--font-mono);
+  color: var(--text-3);
+}
+.reqMark {
+  flex: none;
+  width: 10px;
+  text-align: center;
+}
+.reqOk {
+  color: var(--text-2);
+}
+.reqOk .reqMark {
+  color: var(--ok);
+}
+.reqBad {
+  color: var(--accent-text);
+}
+
+@media (max-width: 720px) {
+  /* Слева места нет — окно под полем */
+  .reqs {
+    position: static;
+    width: auto;
+    margin-top: 10px;
+  }
+  .reqs::after {
+    display: none;
+  }
+}

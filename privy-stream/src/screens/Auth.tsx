@@ -25,6 +25,22 @@ import s from './screens.module.css';
 // Спецсимволы OWASP — тот же набор, что проверяет user_service (ValidatePassword).
 const SPECIAL_CHAR = /[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/;
 
+// Правила регистрации — те же, что в user_service (ValidateUsername / ValidatePassword).
+// Длина в символах, как []rune в Go.
+type Rule = { text: string; ok: (v: string) => boolean };
+const len = (v: string) => [...v].length;
+
+const LOGIN_RULES: Rule[] = [
+  { text: 'от 3 до 20 символов', ok: (v) => len(v) >= 3 && len(v) <= 20 },
+  { text: 'латиница, цифры и . _ -', ok: (v) => /^[a-zA-Z0-9_.-]+$/.test(v) },
+  { text: 'без двух . _ - подряд', ok: (v) => !/[._-]{2}/.test(v) },
+];
+const PASSWORD_RULES: Rule[] = [
+  { text: 'от 8 до 128 символов', ok: (v) => len(v) >= 8 && len(v) <= 128 },
+  { text: 'хотя бы один спецсимвол: ! @ # $ % & * и т.п.', ok: (v) => SPECIAL_CHAR.test(v) },
+];
+const firstBroken = (rules: Rule[], v: string) => rules.find((r) => !r.ok(v));
+
 type Mode = 'login' | 'register';
 
 export function Auth() {
@@ -41,6 +57,8 @@ export function Auth() {
   const [birth, setBirth] = useState<DateParts>({ day: '', month: '', year: '' });
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  // Поле, для которого открыто окно с требованиями (только при регистрации).
+  const [focus, setFocus] = useState<'login' | 'password' | null>(null);
   // Первый запуск без узлов — форма добавления сразу открыта.
   const [addOpen, setAddOpen] = useState(noNodes);
 
@@ -64,8 +82,10 @@ export function Auth() {
     if (node.status !== 'online') return setErr(`503 · узел ${node.host} не отвечает`);
     // Проверки из контракта API v1 (RegisterRequest / AuthRequest) — до запроса.
     if (!login.trim()) return setErr('400 · укажи логин');
-    if (reg && pass.length < 8) return setErr('400 · пароль: минимум 8 символов');
-    if (reg && !SPECIAL_CHAR.test(pass)) return setErr('400 · пароль: нужен хотя бы один спецсимвол (!@#$% и т.п.)');
+    const badLogin = reg && firstBroken(LOGIN_RULES, login);
+    if (badLogin) return setErr(`400 · логин: ${badLogin.text}`);
+    const badPass = reg && firstBroken(PASSWORD_RULES, pass);
+    if (badPass) return setErr(`400 · пароль: ${badPass.text}`);
     if (reg && pass2 !== pass) return setErr('400 · пароли не совпадают');
     const birthDate = isoDate(birth);
     if (reg && !birthDate) return setErr('400 · дата рождения: выбери день, месяц и год');
@@ -151,8 +171,33 @@ export function Auth() {
             )}
             <div className={s.divider} />
 
-            <Field label="ЛОГИН" value={login} onChange={edit(setLogin)} placeholder="user_name" autoFocus={!noNodes && !mobile} />
-            <PasswordField label="ПАРОЛЬ" value={pass} onChange={edit(setPass)} placeholder="••••••••••" />
+            <div className={s.reqAnchor}>
+              <Field
+                label="ЛОГИН"
+                value={login}
+                onChange={edit(setLogin)}
+                placeholder="user_name"
+                autoFocus={!noNodes && !mobile}
+                onFocus={() => setFocus('login')}
+                onBlur={() => setFocus(null)}
+                aria-describedby={reg ? 'login-rules' : undefined}
+              />
+              {reg && focus === 'login' && <Requirements id="login-rules" title="ТРЕБОВАНИЯ К ЛОГИНУ" rules={LOGIN_RULES} value={login} />}
+            </div>
+            <div className={s.reqAnchor}>
+              <PasswordField
+                label="ПАРОЛЬ"
+                value={pass}
+                onChange={edit(setPass)}
+                placeholder="••••••••••"
+                onFocus={() => setFocus('password')}
+                onBlur={() => setFocus(null)}
+                aria-describedby={reg ? 'password-rules' : undefined}
+              />
+              {reg && focus === 'password' && (
+                <Requirements id="password-rules" title="ТРЕБОВАНИЯ К ПАРОЛЮ" rules={PASSWORD_RULES} value={pass} />
+              )}
+            </div>
             {reg && <PasswordField label="ПОВТОР ПАРОЛЯ" value={pass2} onChange={edit(setPass2)} placeholder="••••••••••" />}
             {reg && (
               <DateField
@@ -177,6 +222,28 @@ export function Auth() {
           </form>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** Всплывающее окно с требованиями: каждое правило отмечается по мере ввода. */
+function Requirements({ id, title, rules, value }: { id: string; title: string; rules: Rule[]; value: string }) {
+  return (
+    <div id={id} role="tooltip" className={s.reqs}>
+      <div className={s.reqsTitle}>{title}</div>
+      <ul className={s.reqsList}>
+        {rules.map((r) => {
+          const state = !value ? 'idle' : r.ok(value) ? 'ok' : 'bad';
+          return (
+            <li key={r.text} className={cx(s.req, state === 'ok' && s.reqOk, state === 'bad' && s.reqBad)}>
+              <span className={s.reqMark} aria-hidden="true">
+                {state === 'ok' ? '✓' : state === 'bad' ? '✕' : '·'}
+              </span>
+              {r.text}
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

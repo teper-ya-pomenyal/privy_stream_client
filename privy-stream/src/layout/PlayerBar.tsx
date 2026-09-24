@@ -82,3 +82,29 @@ function useMeterTick(playing: boolean) {
   }, [playing]);
   return tick;
 }
+
+/** Мобильный мини-плеер над таб-баром: тап по треку раскрывает полноэкранный плеер. */
+export function MiniPlayer() {
+  const track = useCurrentTrack();
+  const { playing, position, loading, error, toggle, setFullscreen } = usePlayer();
+  const duration = useDuration();
+  const pct = duration ? Math.min(100, (position / duration) * 100) : 0;
+
+  return (
+    <div className={s.mini}>
+      <div className={s.miniProgress} style={{ width: `${pct}%` }} />
+      <button type="button" className={s.nowPlaying} onClick={() => track && setFullscreen(true)}>
+        <div className={cx(s.thumb, s.miniThumb)} />
+        <div className={s.nowText}>
+          <span className={cx(s.miniTitle, 'ellipsis')}>{track?.title ?? '—'}</span>
+          <span className={cx(s.nowSub, 'ellipsis')} style={error ? { color: 'var(--accent-text)' } : undefined}>
+            {error || (loading ? 'загрузка с узла…' : track ? track.artist : 'очередь пуста')}
+          </span>
+        </div>
+      </button>
+      <button type="button" className={cx(s.playBtn, s.miniPlay)} onClick={toggle} aria-label={playing ? 'Пауза' : 'Играть'}>
+        {playGlyph(playing)}
+      </button>
+    </div>
+  );
+}

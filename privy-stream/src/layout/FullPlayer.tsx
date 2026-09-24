@@ -82,7 +82,7 @@ export function FullPlayer() {
             <Button size="md" onClick={next} style={{ padding: '12px 16px', fontSize: 12, fontWeight: 500 }} aria-label="Следующий">
               ▶▶
             </Button>
-            <div style={{ display: 'flex', gap: 8, marginLeft: 12 }}>
+            <div className={s.fullExtra}>
               <Button size="sm" style={{ padding: '12px 14px', color: 'var(--text-3)' }}>
                 ПОВТОР
               </Button>

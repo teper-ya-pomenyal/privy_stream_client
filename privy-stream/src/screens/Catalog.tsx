@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { errorText, type Release, type SearchResult, type Track } from '../api';
 import { useBrowse, useSearch } from '../api/queries';
 import { IS_WEB } from '../platform/mode';
+import { useMobile } from '../lib/useMobile';
 import { usePlayer } from '../store/player';
 import { useActiveNode } from '../store/servers';
 import { Button, Cover, EmptyState, ErrorNote, hostLabel, PrefixedInput, Screen, ScreenHeader, Skeleton, TrackTable } from '../ui';
@@ -41,6 +42,7 @@ function releasesOf(tracks: Track[]): Release[] {
 function CatalogView({ host, name }: { host: string; name: string }) {
   const navigate = useNavigate();
   const play = usePlayer((p) => p.play);
+  const mobile = useMobile();
   const [input, setInput] = useState('');
   const [filter, setFilter] = useState<Filter>('ВСЁ');
   const query = useDebounced(input.trim());
@@ -152,7 +154,8 @@ function CatalogView({ host, name }: { host: string; name: string }) {
             onChange={(e) => setInput(e.target.value)}
             placeholder="трек или артист…"
             suffix={searching && search.data ? String(found) : undefined}
-            autoFocus
+            // На телефоне автофокус сразу открывает клавиатуру поверх полки.
+            autoFocus={!mobile}
           />
         }
       />

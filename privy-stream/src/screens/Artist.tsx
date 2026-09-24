@@ -49,7 +49,7 @@ export function Artist() {
             <StatusDot size={6} color="var(--accent)" />
             <span className="t-eyebrow">АРТИСТ · БЕЗ ГЕОБЛОКА</span>
           </div>
-          {a ? <h2 className={s.artistName}>{a.name}</h2> : <Skeleton style={{ height: 62, width: 420 }} />}
+          {a ? <h2 className={s.artistName}>{a.name}</h2> : <Skeleton style={{ height: 62, width: 420, maxWidth: '100%' }} />}
           <div className={s.albumMeta}>
             {a ? [`${n} ${plural(n, ['РЕЛИЗ', 'РЕЛИЗА', 'РЕЛИЗОВ'])}`, a.activeYears].filter(Boolean).join(' · ') : '—'}
           </div>

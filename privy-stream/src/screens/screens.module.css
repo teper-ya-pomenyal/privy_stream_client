@@ -662,3 +662,170 @@
   color: var(--text-6);
   margin-left: auto;
 }
+
+/* ================= Mobile ================= */
+@media (max-width: 720px) {
+  /* Вход: одна колонка, от питча остаются лого и заголовок */
+  .auth {
+    height: 100dvh;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    overflow-y: auto;
+  }
+  .authLeft {
+    gap: 22px;
+    padding: calc(22px + env(safe-area-inset-top)) 16px 22px;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .pitch {
+    gap: 14px;
+  }
+  .pitchTitle {
+    font-size: 34px;
+  }
+  .pitchText,
+  .pitchFacts,
+  .techLine {
+    display: none;
+  }
+  .authRight {
+    align-items: flex-start;
+    padding: 20px 16px calc(28px + env(safe-area-inset-bottom));
+  }
+  .card {
+    max-width: none;
+  }
+  .cardBody {
+    padding: 22px 16px 20px;
+  }
+
+  /* Узлы */
+  .addInput {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .nodeRow {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .nodeMain {
+    flex-basis: 100%;
+  }
+  .theses {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* Каталог: поиск на всю ширину, фильтры скроллятся в строку */
+  .search {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin: 0 -16px;
+    padding: 16px 16px 2px;
+    scrollbar-width: none;
+  }
+  .filters::-webkit-scrollbar {
+    display: none;
+  }
+  .filters > * {
+    flex: none;
+  }
+  .cardTitle {
+    font-size: 13px;
+  }
+  .results {
+    gap: 26px;
+  }
+  .artistRow {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  /* Релиз */
+  .back {
+    margin-bottom: 18px;
+  }
+  .albumLayout {
+    gap: 24px;
+  }
+  .albumAside {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .albumAside > :first-child {
+    width: min(100%, 320px);
+    align-self: center;
+  }
+  .albumMain {
+    flex-basis: 100%;
+    gap: 20px;
+  }
+  .albumTitle {
+    font-size: 32px;
+  }
+  .actions > :first-child {
+    flex: 1 1 100%;
+  }
+  .actions > * {
+    flex: 1 1 0;
+  }
+
+  /* Артист */
+  .artistHero {
+    height: 220px;
+    padding: 0 16px 20px;
+  }
+  .heroCaption {
+    left: 16px;
+  }
+  .heroBack {
+    right: 16px;
+  }
+  .artistName {
+    font-size: 42px;
+    overflow-wrap: anywhere;
+  }
+  .stats {
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 26px;
+  }
+  .stat {
+    padding: 14px;
+  }
+  .statVal {
+    font-size: 18px;
+  }
+  .twoCols {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  /* Фонотека */
+  .libStats {
+    text-align: left;
+  }
+
+  /* Настройки */
+  .settingsList {
+    margin-top: 18px;
+  }
+  .settingRow {
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 16px 6px;
+  }
+
+  /* Ошибка конфига (веб) */
+  .configError {
+    height: 100dvh;
+    padding: calc(28px + env(safe-area-inset-top)) 16px 28px;
+  }
+  .configErrorTitle {
+    font-size: 34px;
+  }
+}

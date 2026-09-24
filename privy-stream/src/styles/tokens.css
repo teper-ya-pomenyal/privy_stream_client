@@ -76,3 +76,17 @@
   --grid-gap: 16px;
   --grid-top: 20px;
 }
+
+/* Телефон: плотность задаёт ширина экрана, переключатель не влияет */
+@media (max-width: 720px) {
+  :root,
+  :root[data-density='dense'] {
+    --header-h: 48px;
+    --pad-screen: 20px 16px 28px;
+    --row-pad-y: 11px;
+    --node-pad-y: 13px;
+    --card-min: 140px;
+    --grid-gap: 16px 12px;
+    --grid-top: 18px;
+  }
+}

@@ -1,5 +1,7 @@
 .app {
   height: 100vh;
+  /* На телефонах 100vh больше видимой области из-за панелей браузера */
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -380,6 +382,11 @@
   align-items: center;
   gap: 20px;
 }
+.fullExtra {
+  display: flex;
+  gap: 8px;
+  margin-left: 12px;
+}
 .fullPlay {
   width: 62px;
   height: 62px;
@@ -462,4 +469,146 @@
   display: flex;
   flex-direction: column;
   gap: 7px;
+}
+
+/* ---------- Mobile: mini player + tab bar ---------- */
+.mini {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-top: 1px solid var(--line-ctrl);
+  background: var(--bg-card);
+}
+.miniProgress {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  height: 2px;
+  background: var(--accent);
+}
+.mini .nowPlaying {
+  flex: 1;
+}
+.miniThumb {
+  width: 38px;
+  height: 38px;
+}
+.miniTitle {
+  font: 600 12px/1.2 var(--font-display);
+}
+.miniPlay {
+  width: 40px;
+  height: 40px;
+  flex: none;
+}
+.tabBar {
+  flex: none;
+  display: flex;
+  border-top: 1px solid var(--line);
+  background: var(--bg-panel);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tabItem {
+  flex: 1;
+  padding: 16px 0;
+  text-align: center;
+  font: 600 9px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  color: var(--text-4);
+  text-decoration: none;
+}
+.tabItem + .tabItem {
+  border-left: 1px solid var(--line);
+}
+.tabActive {
+  color: var(--accent);
+}
+
+@media (max-width: 720px) {
+  .header {
+    padding: 0 14px;
+    padding-top: env(safe-area-inset-top);
+    height: calc(var(--header-h) + env(safe-area-inset-top));
+    gap: 12px;
+  }
+  .headerLeft {
+    gap: 12px;
+  }
+  .crumbs {
+    display: none;
+  }
+  .nodeChip {
+    padding: 6px 8px;
+  }
+
+  /* Полноэкранный плеер: одна колонка, очередь под плеером, скролл всего экрана */
+  .full {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .fullBar {
+    padding: 0 16px;
+  }
+  .fullBar :global(.t-eyebrow) {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+  }
+  .fullBody {
+    display: block;
+    overflow-y: auto;
+  }
+  .fullMain {
+    justify-content: flex-start;
+    gap: 26px;
+    padding: 22px 16px 28px;
+    overflow: visible;
+  }
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+  }
+  .heroCover {
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+    align-self: center;
+  }
+  .heroText {
+    flex: none;
+  }
+  .heroTitle {
+    font-size: 32px;
+  }
+  .wave {
+    height: 64px;
+  }
+  .fullTransport {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+  .fullExtra {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+  .queue {
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+  .queueHead,
+  .queueFoot {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .queueList {
+    overflow: visible;
+  }
+  .queueRow {
+    padding: 12px 16px;
+  }
 }

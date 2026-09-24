@@ -175,8 +175,8 @@ export function TrackTable({
           <span>НАЗВАНИЕ</span>
           {variant === 'library' && (
             <>
-              <span>АРТИСТ</span>
-              <span>РЕЛИЗ</span>
+              <span className={s.libOnly}>АРТИСТ</span>
+              <span className={s.libOnly}>РЕЛИЗ</span>
             </>
           )}
           <span>ФОРМАТ</span>
@@ -193,13 +193,19 @@ export function TrackTable({
                 <span className={cx(s.tTitle, 'ellipsis')}>{t.title}</span>
                 <span className={s.tSub}>{[t.artist, t.format].filter(Boolean).join(' · ')}</span>
               </span>
+            ) : variant === 'library' ? (
+              <span className={s.tTitleCell}>
+                <span className={cx(s.tTitle, 'ellipsis')}>{t.title}</span>
+                {/* На телефоне колонки артиста и релиза скрыты — показываем их строкой под названием */}
+                <span className={cx(s.tSub, s.mobileOnly, 'ellipsis')}>{[t.artist, t.release].filter(Boolean).join(' · ')}</span>
+              </span>
             ) : (
               <span className={cx(s.tTitle, 'ellipsis')}>{t.title}</span>
             )}
             {variant === 'library' && (
               <>
-                <span className={cx(s.tArtist, 'ellipsis')}>{t.artist}</span>
-                <span className={cx(s.tRelease, 'ellipsis')}>{t.release}</span>
+                <span className={cx(s.tArtist, s.libOnly, 'ellipsis')}>{t.artist}</span>
+                <span className={cx(s.tRelease, s.libOnly, 'ellipsis')}>{t.release}</span>
               </>
             )}
             <span className={s.tFmt}>{t.format ?? (t.explicit ? '18+' : '—')}</span>

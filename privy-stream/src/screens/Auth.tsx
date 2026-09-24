@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { errorText, nodeApi } from '../api';
+import { useMobile } from '../lib/useMobile';
 import { IS_WEB } from '../platform/mode';
 import { useActiveNodeOrNull, useServers } from '../store/servers';
 import { useSession } from '../store/session';
@@ -13,6 +14,7 @@ export function Auth() {
   const noNodes = useServers((x) => x.nodes.length === 0);
   const nodeError = useServers((x) => x.error);
   const signIn = useSession((x) => x.signIn);
+  const mobile = useMobile();
 
   const [mode, setMode] = useState<Mode>('login');
   const [login, setLogin] = useState('');
@@ -126,7 +128,7 @@ export function Auth() {
             )}
             <div className={s.divider} />
 
-            <Field label="ЛОГИН" value={login} onChange={edit(setLogin)} placeholder="user_name" autoFocus={!noNodes} />
+            <Field label="ЛОГИН" value={login} onChange={edit(setLogin)} placeholder="user_name" autoFocus={!noNodes && !mobile} />
             <Field label="ПАРОЛЬ" type="password" value={pass} onChange={edit(setPass)} placeholder="••••••••••" />
             {reg && <Field label="ДАТА РОЖДЕНИЯ" value={birth} onChange={edit(setBirth)} placeholder="1994-05-17" />}
 

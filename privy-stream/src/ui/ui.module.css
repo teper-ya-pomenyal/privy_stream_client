@@ -331,6 +331,9 @@
 .right {
   text-align: right;
 }
+.mobileOnly {
+  display: none;
+}
 
 /* ---------- Empty ---------- */
 .empty {
@@ -353,4 +356,37 @@
 .skel {
   background: var(--bg-active);
   animation: pv-shimmer 1.4s ease-in-out infinite;
+}
+
+@media (max-width: 720px) {
+  .screenHeader {
+    gap: 18px;
+    padding-bottom: 16px;
+  }
+  .screenHeader :global(.t-h2) {
+    font-size: 26px;
+  }
+  /* Фонотека: артист и релиз уходят под название, как в очереди макета */
+  .colsLibrary,
+  .colsRelease {
+    grid-template-columns: 26px minmax(0, 1fr) auto 44px;
+  }
+  .libOnly {
+    display: none;
+  }
+  .mobileOnly {
+    display: block;
+  }
+  .trackHead,
+  .trackRow {
+    gap: 10px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  .empty {
+    padding: 22px 18px;
+  }
+  .emptyText {
+    font-size: 14px;
+  }
 }

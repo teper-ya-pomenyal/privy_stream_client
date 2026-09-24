@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { useBrowse, useLibrary } from '../api/queries';
+import { useMobile } from '../lib/useMobile';
 import { IS_WEB } from '../platform/mode';
 import { useActiveNode, useOnlineCount, useServers } from '../store/servers';
 import { usePlayer } from '../store/player';
@@ -9,7 +10,7 @@ import { Button, cx, hostLabel, Logo, StatusDot } from '../ui';
 import { AudioEngine } from './AudioEngine';
 import { FullPlayer } from './FullPlayer';
 import { startListenReporter } from './listenReporter';
-import { PlayerBar } from './PlayerBar';
+import { MiniPlayer, PlayerBar } from './PlayerBar';
 import s from './layout.module.css';
 
 export function AppShell() {
@@ -17,6 +18,7 @@ export function AppShell() {
   const queueEmpty = usePlayer((p) => p.queue.length === 0);
   const setQueue = usePlayer((p) => p.setQueue);
   const fullscreen = usePlayer((p) => p.fullscreen);
+  const mobile = useMobile();
 
   useEffect(() => startListenReporter(), []);
 
@@ -29,12 +31,19 @@ export function AppShell() {
     <div className={s.app}>
       <Header />
       <div className={s.body}>
-        <Sidebar />
+        {!mobile && <Sidebar />}
         <main className={s.content}>
           <Outlet />
         </main>
       </div>
-      <PlayerBar />
+      {mobile ? (
+        <>
+          <MiniPlayer />
+          <TabBar />
+        </>
+      ) : (
+        <PlayerBar />
+      )}
       {fullscreen && <FullPlayer />}
       <AudioEngine />
     </div>
@@ -143,5 +152,28 @@ function Sidebar() {
         )}
       </div>
     </aside>
+  );
+}
+
+/** Мобильная навигация вместо сайдбара — таб-бар из макета. */
+function TabBar() {
+  const { pathname } = useLocation();
+  const inCatalog = /^\/(catalog|album|artist)/.test(pathname);
+
+  const tabs = [
+    { to: '/catalog', label: 'ПОЛКА', active: inCatalog },
+    { to: '/servers', label: 'УЗЛЫ', app: true },
+    { to: '/library', label: 'ФОНОТЕКА', app: true },
+    { to: '/settings', label: 'Я' },
+  ].filter((it) => !(IS_WEB && it.app));
+
+  return (
+    <nav className={s.tabBar}>
+      {tabs.map((it) => (
+        <NavLink key={it.to} to={it.to} className={({ isActive }) => cx(s.tabItem, (isActive || it.active) && s.tabActive)}>
+          {it.label}
+        </NavLink>
+      ))}
+    </nav>
   );
 }

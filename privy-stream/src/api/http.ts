@@ -84,6 +84,33 @@ async function toNodeError(res: Response, messages: ErrorMessages = {}): Promise
   return new NodeError(res.status, text);
 }
 
+// Коды ошибок валидации POST /register (ValidationError в openapi.yaml).
+const REGISTER_ERRORS: Record<string, string> = {
+  login_required: 'логин: укажи логин',
+  login_too_short: 'логин: минимум 3 символа',
+  login_too_long: 'логин: максимум 20 символов',
+  login_invalid_characters: 'логин: только латиница, цифры и . _ -, без двух спецсимволов подряд',
+  password_required: 'пароль: укажи пароль',
+  password_too_short: 'пароль: минимум 11 символов',
+  password_too_long: 'пароль: максимум 128 символов',
+  password_missing_special: 'пароль: нужен хотя бы один спецсимвол (!@#$% и т.п.)',
+  birth_date_required: 'дата рождения: укажи дату',
+  birth_date_invalid_format: 'дата рождения: неверный формат',
+  birth_date_out_of_range: 'дата рождения: не раньше 1900 года и не в будущем',
+};
+
+async function registerError(res: Response): Promise<NodeError> {
+  if (res.status === 400) {
+    const body = (await res.clone().json().catch(() => null)) as { code?: string } | null;
+    const text = body?.code ? REGISTER_ERRORS[body.code] : undefined;
+    if (text) return new NodeError(400, text);
+  }
+  return toNodeError(res, {
+    400: 'неверные данные регистрации',
+    409: 'пользователь с таким логином уже есть на узле',
+  });
+}
+
 async function send(host: string, path: string, init: RequestInit = {}, timeoutMs?: number): Promise<Response> {
   const ctrl = new AbortController();
   const timer = timeoutMs ? setTimeout(() => ctrl.abort(), timeoutMs) : undefined;
@@ -228,11 +255,7 @@ export const httpNodeApi: NodeApi = {
 
   async register(host, { login, password, birthDate }) {
     const res = await send(host, '/register', json({ user_name: login, password, birth_date: birthDate }));
-    if (!res.ok)
-      throw await toNodeError(res, {
-        400: 'неверные данные: пароль от 8 символов, дата YYYY-MM-DD',
-        409: 'пользователь с таким логином уже есть на узле',
-      });
+    if (!res.ok) throw await registerError(res);
     return toTokens((await res.json()) as ApiAuthResponse);
   },
 

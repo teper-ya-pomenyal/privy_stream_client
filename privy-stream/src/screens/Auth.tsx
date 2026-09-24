@@ -34,6 +34,7 @@ export function Auth() {
   const [mode, setMode] = useState<Mode>('login');
   const [login, setLogin] = useState('');
   const [pass, setPass] = useState('');
+  const [pass2, setPass2] = useState('');
   const [birth, setBirth] = useState<DateParts>({ day: '', month: '', year: '' });
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
@@ -61,6 +62,7 @@ export function Auth() {
     // Проверки из контракта API v1 (RegisterRequest / AuthRequest) — до запроса.
     if (!login.trim()) return setErr('400 · укажи логин');
     if (reg && pass.length < 8) return setErr('400 · пароль: минимум 8 символов');
+    if (reg && pass2 !== pass) return setErr('400 · пароли не совпадают');
     const birthDate = isoDate(birth);
     if (reg && !birthDate) return setErr('400 · дата рождения: выбери день, месяц и год');
     setBusy(true);
@@ -69,6 +71,7 @@ export function Auth() {
         ? await nodeApi.register(node.host, { login, password: pass, birthDate: birthDate! })
         : await nodeApi.login(node.host, { login, password: pass });
       setPass('');
+      setPass2('');
       await signIn(node.host, tokens);
     } catch (e) {
       setErr(errorText(e));
@@ -146,6 +149,7 @@ export function Auth() {
 
             <Field label="ЛОГИН" value={login} onChange={edit(setLogin)} placeholder="user_name" autoFocus={!noNodes && !mobile} />
             <PasswordField label="ПАРОЛЬ" value={pass} onChange={edit(setPass)} placeholder="••••••••••" />
+            {reg && <PasswordField label="ПОВТОР ПАРОЛЯ" value={pass2} onChange={edit(setPass2)} placeholder="••••••••••" />}
             {reg && (
               <DateField
                 label="ДАТА РОЖДЕНИЯ"

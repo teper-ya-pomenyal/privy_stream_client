@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=IBM+Plex+Mono:wght@400;500;600&subset=cyrillic,cyrillic-ext,latin&display=swap" rel="stylesheet"><style>
+html,body{margin:0;padding:0;background:#0B0B0C;color:#E8E6E1;font-family:Manrope,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#D8452B;text-decoration:none}a:hover{color:#F26A4F}
+input{font-family:inherit}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#2A2A2E}::-webkit-scrollbar-track{background:#101012}
+@keyframes pv-blink{0%,45%{opacity:1}50%,100%{opacity:.15}}
+@keyframes pv-rise{0%{transform:translateY(8px);opacity:0}100%{transform:translateY(0);opacity:1}}
+</style></helmet>
+<div style="height:100vh;display:flex;flex-direction:column;background:#0B0B0C;overflow:hidden">
+
+<sc-if value="{{ isAuth }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:grid;grid-template-columns:1.05fr .95fr;min-height:0">
+<div style="padding:56px 60px;display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid #1E1E22;background:#0E0E10">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:12px;height:12px;background:#D8452B"></div>
+<div style="font:700 13px/1 Manrope;letter-spacing:.22em">PRIVY<span style="color:#6E6C67">/</span>STREAM</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:26px;max-width:460px">
+<div style="font:600 11px/1 'IBM Plex Mono';letter-spacing:.2em;color:#D8452B">БЕЗ ГРАНИЦ · БЕЗ ЦЕНЗУРЫ</div>
+<h1 style="margin:0;font:700 52px/0.98 Manrope;letter-spacing:-.03em;text-wrap:pretty">Ты сам решаешь<br>какую музыку<br>слушать</h1>
+<p style="margin:0;font:400 15px/1.6 Manrope;color:#8E8C86;max-width:390px;text-wrap:pretty">Приватная фонотека без региональных блокировок и внешних списков запрещённого. Твой каталог, твой ключ, твоё правило.</p>
+<div style="display:flex;gap:28px;padding-top:8px;border-top:1px solid #1E1E22">
+<div style="display:flex;flex-direction:column;gap:5px"><div style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.14em;color:#6E6C67">ШИФРОВАНИЕ</div><div style="font:500 13px/1 'IBM Plex Mono'">RS256</div></div>
+<div style="display:flex;flex-direction:column;gap:5px"><div style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.14em;color:#6E6C67">СЕССИЯ</div><div style="font:500 13px/1 'IBM Plex Mono'">РОТАЦИЯ</div></div>
+<div style="display:flex;flex-direction:column;gap:5px"><div style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.14em;color:#6E6C67">ТЕЛЕМЕТРИЯ</div><div style="font:500 13px/1 'IBM Plex Mono'">ВЫКЛ</div></div>
+</div>
+</div>
+<div style="font:400 10px/1.6 'IBM Plex Mono';color:#4E4C48;letter-spacing:.1em">{{ serverHost }} · UPTIME 99.97% · BUILD 0.4.1</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:center;padding:40px">
+<div style="width:100%;max-width:392px;background:#121214;border:1px solid #26262A">
+<div style="display:flex;border-bottom:1px solid #26262A">
+<div onClick="{{ setModeLogin }}" style="flex:1;padding:16px 0;text-align:center;font:600 11px/1 'IBM Plex Mono';letter-spacing:.16em;cursor:pointer;color:#E8E6E1;background:#17171A">ВХОД</div>
+<div onClick="{{ setModeReg }}" style="flex:1;padding:16px 0;text-align:center;font:600 11px/1 'IBM Plex Mono';letter-spacing:.16em;cursor:pointer;color:#6E6C67;border-left:1px solid #26262A" style-hover="{{ hoverTab }}">РЕГИСТРАЦИЯ</div>
+</div>
+<div style="padding:28px 26px 26px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-direction:column;gap:9px">
+<label style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.16em;color:#6E6C67">УЗЕЛ ПОДКЛЮЧЕНИЯ</label>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+<sc-for list="{{ serverRows }}" as="s" hint-placeholder-count="4">
+<div onClick="{{ s.pick }}" style="{{ s.chipStyle }}">
+<div style="{{ s.dotStyle }}"></div>
+<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ s.name }}</span>
+</div>
+</sc-for>
+</div>
+<div style="font:400 10px/1 'IBM Plex Mono';color:#4E4C48">{{ serverHost }} · аккаунт создаётся на выбранном узле</div>
+</div>
+<div style="height:1px;background:#1E1E22"></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<label style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.16em;color:#6E6C67">ЛОГИН</label>
+<input value="{{ loginVal }}" onChange="{{ onLogin }}" placeholder="user_name" style="width:100%;padding:12px 13px;background:#0C0C0E;border:1px solid #2E2E33;color:#E8E6E1;font:500 14px/1 'IBM Plex Mono';outline:none" style-focus="{{ focusRing }}">
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<label style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.16em;color:#6E6C67">ПАРОЛЬ</label>
+<input value="{{ passVal }}" onChange="{{ onPass }}" type="password" placeholder="••••••••••" style="width:100%;padding:12px 13px;background:#0C0C0E;border:1px solid #2E2E33;color:#E8E6E1;font:500 14px/1 'IBM Plex Mono';outline:none" style-focus="{{ focusRing }}">
+</div>
+<sc-if value="{{ isReg }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:8px">
+<label style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.16em;color:#6E6C67">ДАТА РОЖДЕНИЯ</label>
+<input value="{{ birthVal }}" onChange="{{ onBirth }}" placeholder="1994-05-17" style="width:100%;padding:12px 13px;background:#0C0C0E;border:1px solid #2E2E33;color:#E8E6E1;font:500 14px/1 'IBM Plex Mono';outline:none" style-focus="{{ focusRing }}">
+</div>
+</sc-if>
+<sc-if value="{{ authError }}" hint-placeholder-val="{{ false }}">
+<div style="padding:10px 12px;background:rgba(216,69,43,.1);border-left:2px solid #D8452B;font:500 11px/1.4 'IBM Plex Mono';color:#F0765C">{{ authError }}</div>
+</sc-if>
+<div onClick="{{ submit }}" style="margin-top:4px;padding:14px 0;text-align:center;background:#D8452B;color:#0B0B0C;font:700 12px/1 'IBM Plex Mono';letter-spacing:.18em;cursor:pointer;user-select:none" style-hover="{{ hoverAccent }}">{{ submitLabel }}</div>
+<div style="display:flex;justify-content:space-between;font:400 10px/1 'IBM Plex Mono';color:#4E4C48;padding-top:6px;border-top:1px solid #1E1E22">
+<span>POST /v1/auth</span><span>{{ authHint }}</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;display:flex;flex-direction:column;min-height:0">
+
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 16px 0 18px;border-bottom:1px solid #1E1E22;background:#0E0E10">
+<div style="display:flex;align-items:center;gap:22px">
+<div style="display:flex;align-items:center;gap:9px"><div style="width:9px;height:9px;background:#D8452B"></div><div style="font:700 11px/1 Manrope;letter-spacing:.2em">PRIVY<span style="color:#6E6C67">/</span>STREAM</div></div>
+<div style="font:400 10px/1 'IBM Plex Mono';color:#4E4C48;letter-spacing:.1em">{{ breadcrumb }}</div>
+<div onClick="{{ goServers }}" style="display:flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid #2E2E33;cursor:pointer" style-hover="{{ hoverTab }}">
+<div style="width:6px;height:6px;background:#D8452B;animation:pv-blink 1.8s infinite"></div>
+<span style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.1em;color:#C8C6C0">{{ serverHost }}</span>
+<span style="font:400 10px/1 'IBM Plex Mono';color:#4E4C48">{{ server.ping }} ms ▾</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="display:flex;border:1px solid #26262A">
+<div onClick="{{ setDesktop }}" style="{{ tabDesktop }}">DESKTOP</div>
+<div onClick="{{ setMobile }}" style="{{ tabMobile }}">MOBILE</div>
+</div>
+<div onClick="{{ toggleDensity }}" style="padding:7px 11px;border:1px solid #26262A;font:600 10px/1 'IBM Plex Mono';letter-spacing:.14em;color:#8E8C86;cursor:pointer" style-hover="{{ hoverTab }}">{{ densityLabel }}</div>
+<div onClick="{{ logout }}" style="padding:7px 11px;border:1px solid #26262A;font:600 10px/1 'IBM Plex Mono';letter-spacing:.14em;color:#8E8C86;cursor:pointer" style-hover="{{ hoverTab }}">ВЫХОД</div>
+</div>
+</div>
+
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;display:flex;min-height:0">
+
+<div style="width:216px;flex:none;border-right:1px solid #1E1E22;background:#0E0E10;display:flex;flex-direction:column;justify-content:space-between;padding:18px 0 16px">
+<div style="display:flex;flex-direction:column;gap:2px">
+<div style="padding:0 18px 10px;font:600 10px/1 'IBM Plex Mono';letter-spacing:.18em;color:#4E4C48">НАВИГАЦИЯ</div>
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="4">
+<div onClick="{{ n.go }}" style="{{ n.style }}" style-hover="{{ hoverNav }}">
+<span style="font:600 12px/1 'IBM Plex Mono';letter-spacing:.1em">{{ n.label }}</span>
+<span style="font:400 10px/1 'IBM Plex Mono';color:#4E4C48">{{ n.count }}</span>
+</div>
+</sc-for>
+</div>
+<div style="padding:0 18px;display:flex;flex-direction:column;gap:12px">
+<div style="height:1px;background:#1E1E22"></div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;justify-content:space-between;font:400 10px/1 'IBM Plex Mono';color:#6E6C67"><span>КАНАЛ</span><span style="color:#C8C6C0">FLAC 24/96</span></div>
+<div style="display:flex;justify-content:space-between;font:400 10px/1 'IBM Plex Mono';color:#6E6C67"><span>БУФЕР</span><span style="color:#C8C6C0">{{ buffer }}</span></div>
+<div style="display:flex;justify-content:space-between;gap:10px;font:400 10px/1 'IBM Plex Mono';color:#6E6C67"><span>УЗЕЛ</span><span style="color:#C8C6C0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ serverName }}</span></div>
+</div>
+<div onClick="{{ goServers }}" style="display:flex;align-items:center;gap:7px;padding-top:2px;cursor:pointer" style-hover="{{ hoverText }}">
+<div style="width:6px;height:6px;background:#D8452B;animation:pv-blink 1.6s infinite"></div>
+<div style="font:600 9px/1 'IBM Plex Mono';letter-spacing:.14em;color:#8E8C86">СМЕНИТЬ УЗЕЛ · {{ onlineCount }} ОНЛАЙН</div>
+</div>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;overflow-y:auto;background:#0B0B0C">
+
+<sc-if value="{{ onServers }}" hint-placeholder-val="{{ false }}">
+<div style="{{ padWrap }}">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid #1E1E22">
+<div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+<div style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.2em;color:#D8452B">СЕТЬ УЗЛОВ · {{ onlineCount }} ОНЛАЙН</div>
+<h2 style="margin:0;font:700 34px/1 Manrope;letter-spacing:-.02em">Серверы</h2>
+</div>
+<p style="margin:0;max-width:420px;font:400 13px/1.6 Manrope;color:#8E8C86;text-wrap:pretty">Единого сервера нет. Любой может поднять свой узел, залить туда фонотеку и раздать адрес. Клиент подключается к узлу и ищет музыку только на нём.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px;padding:22px 0 26px">
+<div style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.18em;color:#4E4C48">ПОДКЛЮЧИТЬСЯ ПО АДРЕСУ</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+<div style="display:flex;align-items:center;gap:10px;border:1px solid #26262A;background:#101012;padding:11px 13px;flex:1 1 300px;max-width:420px">
+<span style="font:600 11px/1 'IBM Plex Mono';color:#4E4C48">://</span>
+<input value="{{ newHost }}" onChange="{{ onNewHost }}" placeholder="10.0.0.5:8443" style="flex:1;min-width:0;background:transparent;border:none;color:#E8E6E1;font:500 13px/1 'IBM Plex Mono';outline:none">
+</div>
+<div onClick="{{ addServer }}" style="padding:13px 20px;background:#D8452B;color:#0B0B0C;font:700 11px/1 'IBM Plex Mono';letter-spacing:.14em;cursor:pointer;white-space:nowrap" style-hover="{{ hoverAccent }}">ДОБАВИТЬ УЗЕЛ</div>
+<div style="font:400 10px/1.5 'IBM Plex Mono';color:#4E4C48">ключ и история остаются<br>на стороне клиента</div>
+</div>
+<sc-if value="{{ srvErr }}" hint-placeholder-val="{{ false }}">
+<div style="padding:10px 12px;background:rgba(216,69,43,.1);border-left:2px solid #D8452B;font:500 11px/1.4 'IBM Plex Mono';color:#F0765C">{{ srvErr }}</div>
+</sc-if>
+</div>
+<div style="border-top:1px solid #1E1E22">
+<sc-for list="{{ serverRows }}" as="s" hint-placeholder-count="4">
+<div style="{{ s.rowStyle }}">
+<div style="flex:1 1 320px;min-width:0;display:flex;align-items:flex-start;gap:12px">
+<div style="{{ s.dotStyle }}"></div>
+<div style="min-width:0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+<span style="font:600 15px/1.2 Manrope">{{ s.name }}</span>
+<span style="font:500 11px/1 'IBM Plex Mono';color:#C8C6C0;overflow-wrap:anywhere">{{ s.host }}</span>
+</div>
+<span style="font:400 10px/1.5 'IBM Plex Mono';color:#5A5854;text-wrap:pretty">{{ s.subLine }}</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:18px;margin-left:auto">
+<div style="display:flex;flex-direction:column;gap:5px;text-align:right">
+<span style="font:500 9px/1 'IBM Plex Mono';letter-spacing:.12em;color:{{ s.statusColor }};white-space:nowrap">{{ s.statusLabel }}</span>
+<span style="font:500 11px/1 'IBM Plex Mono';color:#6E6C67">{{ s.pingLabel }}</span>
+</div>
+<div onClick="{{ s.connect }}" style="{{ s.actionStyle }}" style-hover="{{ hoverTab }}">{{ s.actionLabel }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;gap:26px;flex-wrap:wrap;padding-top:22px;font:400 10px/1.6 'IBM Plex Mono';color:#4E4C48;letter-spacing:.08em">
+<span>РЕЛИЗЫ ИНДЕКСИРУЮТСЯ УЗЛОМ, НЕ КЛИЕНТОМ</span><span>ПОИСК ИДЁТ ТОЛЬКО ПО ТЕКУЩЕМУ УЗЛУ</span><span>СМЕНА УЗЛА НЕ ТРОГАЕТ ЛОКАЛЬНУЮ ФОНОТЕКУ</span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ onCatalog }}" hint-placeholder-val="{{ true }}">
+<div style="{{ padWrap }}">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid #1E1E22">
+<div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+<div style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.2em;color:#D8452B">{{ serverHost }} · {{ total }} РЕЛИЗОВ</div>
+<h2 style="margin:0;font:700 34px/1 Manrope;letter-spacing:-.02em">Полка узла «{{ serverName }}»</h2>
+</div>
+<div style="display:flex;align-items:center;gap:10px;border:1px solid #26262A;background:#101012;padding:10px 13px;flex:1 1 260px;max-width:340px">
+<span style="font:600 11px/1 'IBM Plex Mono';color:#4E4C48">/</span>
+<input value="{{ query }}" onChange="{{ onQuery }}" placeholder="артист, релиз, метка…" style="flex:1;background:transparent;border:none;color:#E8E6E1;font:500 13px/1 'IBM Plex Mono';outline:none">
+<span style="font:400 10px/1 'IBM Plex Mono';color:#4E4C48">{{ found }}</span>
+</div>
+</div>
+<div style="display:flex;gap:8px;padding:18px 0 0;flex-wrap:wrap">
+<sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
+<div onClick="{{ f.pick }}" style="{{ f.style }}" style-hover="{{ hoverTab }}">{{ f.label }}</div>
+</sc-for>
+</div>
+<sc-if value="{{ shelfEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:30px;border:1px dashed #2E2E33;padding:34px;display:flex;flex-direction:column;gap:14px;align-items:flex-start">
+<div style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.18em;color:#6E6C67">ПУСТОЙ ИНДЕКС</div>
+<div style="font:500 16px/1.5 Manrope;color:#C8C6C0;max-width:420px;text-wrap:pretty">{{ emptyNote }}</div>
+<div onClick="{{ goServers }}" style="padding:12px 18px;border:1px solid #2E2E33;font:600 10px/1 'IBM Plex Mono';letter-spacing:.14em;color:#C8C6C0;cursor:pointer" style-hover="{{ hoverTab }}">ВЫБРАТЬ ДРУГОЙ УЗЕЛ</div>
+</div>
+</sc-if>
+<div style="{{ gridStyle }}">
+<sc-for list="{{ shelf }}" as="a" hint-placeholder-count="8">
+<div onClick="{{ a.open }}" style="display:flex;flex-direction:column;gap:10px;cursor:pointer;animation:pv-rise .3s ease both" style-hover="{{ hoverCard }}">
+<div style="position:relative;aspect-ratio:1;background:repeating-linear-gradient(135deg,#17171A 0 7px,#121215 7px 14px);border:1px solid #26262A;display:flex;align-items:center;justify-content:center">
+<span style="font:500 9px/1.5 'IBM Plex Mono';color:#5A5854;letter-spacing:.1em;text-align:center;padding:0 10px">обложка<br>{{ a.dim }}</span>
+<span style="position:absolute;top:0;left:0;padding:4px 6px;background:#0B0B0C;font:600 9px/1 'IBM Plex Mono';color:#8E8C86">{{ a.code }}</span>
+<sc-if value="{{ a.flagged }}" hint-placeholder-val="{{ false }}">
+<span style="position:absolute;bottom:0;right:0;padding:4px 6px;background:#D8452B;color:#0B0B0C;font:700 8px/1 'IBM Plex Mono';letter-spacing:.1em">18+</span>
+</sc-if>
+</div>
+<div style="display:flex;flex-direction:column;gap:3px">
+<div style="font:600 14px/1.2 Manrope;letter-spacing:-.01em">{{ a.title }}</div>
+<div style="font:400 11px/1.3 'IBM Plex Mono';color:#8E8C86">{{ a.artist }}</div>
+<div style="font:400 10px/1.3 'IBM Plex Mono';color:#4E4C48;letter-spacing:.08em">{{ a.meta }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ onAlbum }}" hint-placeholder-val="{{ false }}">
+<div style="{{ padWrap }}">
+<div onClick="{{ back }}" style="display:inline-flex;align-items:center;gap:7px;font:600 10px/1 'IBM Plex Mono';letter-spacing:.14em;color:#8E8C86;cursor:pointer;margin-bottom:26px" style-hover="{{ hoverText }}">← КАТАЛОГ</div>
+<div style="display:flex;flex-wrap:wrap;gap:34px;align-items:flex-start">
+<div style="flex:1 1 220px;max-width:264px;display:flex;flex-direction:column;gap:14px">
+<div style="position:relative;aspect-ratio:1;background:repeating-linear-gradient(135deg,#17171A 0 7px,#121215 7px 14px);border:1px solid #26262A;display:flex;align-items:center;justify-content:center">
+<span style="font:500 10px/1.6 'IBM Plex Mono';color:#5A5854;letter-spacing:.1em;text-align:center">обложка релиза<br>1000×1000</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:0;border:1px solid #26262A">
+<sc-for list="{{ albumMeta }}" as="m" hint-placeholder-count="5">
+<div style="display:flex;justify-content:space-between;gap:12px;padding:9px 12px;border-bottom:1px solid #1B1B1F">
+<span style="font:400 10px/1 'IBM Plex Mono';color:#6E6C67;letter-spacing:.1em">{{ m.k }}</span>
+<span style="font:500 10px/1 'IBM Plex Mono';color:#C8C6C0">{{ m.v }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="flex:1 1 420px;display:flex;flex-direction:column;gap:24px;min-width:0">
+<div style="display:flex;flex-direction:column;gap:12px">
+<div onClick="{{ toArtist }}" style="font:600 11px/1 'IBM Plex Mono';letter-spacing:.16em;color:#D8452B;cursor:pointer" style-hover="{{ hoverText }}">{{ album.artist }} →</div>
+<h2 style="margin:0;font:700 46px/0.98 Manrope;letter-spacing:-.03em">{{ album.title }}</h2>
+<div style="font:400 12px/1 'IBM Plex Mono';color:#8E8C86;letter-spacing:.08em">{{ album.meta }} · {{ album.tracksCount }} ТРЕКА · {{ album.length }}</div>
+</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<div onClick="{{ playAlbum }}" style="padding:13px 22px;background:#D8452B;color:#0B0B0C;font:700 11px/1 'IBM Plex Mono';letter-spacing:.16em;cursor:pointer;white-space:nowrap" style-hover="{{ hoverAccent }}">▶ СЛУШАТЬ</div>
+<div style="padding:13px 18px;border:1px solid #2E2E33;font:600 11px/1 'IBM Plex Mono';letter-spacing:.14em;color:#C8C6C0;cursor:pointer;white-space:nowrap" style-hover="{{ hoverTab }}">+ В БИБЛИОТЕКУ</div>
+<div style="padding:13px 18px;border:1px solid #2E2E33;font:600 11px/1 'IBM Plex Mono';letter-spacing:.14em;color:#C8C6C0;cursor:pointer;white-space:nowrap" style-hover="{{ hoverTab }}">СКАЧАТЬ FLAC</div>
+</div>
+<div style="border-top:1px solid #1E1E22">
+<div style="display:grid;grid-template-columns:30px minmax(0,1fr) auto 52px;gap:14px;padding:11px 10px;font:600 9px/1 'IBM Plex Mono';letter-spacing:.16em;color:#4E4C48;border-bottom:1px solid #1E1E22;white-space:nowrap">
+<span>#</span><span>НАЗВАНИЕ</span><span>ФОРМАТ</span><span style="text-align:right">ВРЕМЯ</span>
+</div>
+<sc-for list="{{ trackRows }}" as="t" hint-placeholder-count="7">
+<div onClick="{{ t.play }}" style="{{ t.rowStyle }}" style-hover="{{ hoverRow }}">
+<span style="font:500 11px/1 'IBM Plex Mono';color:{{ t.numColor }}">{{ t.num }}</span>
+<span style="display:flex;flex-direction:column;gap:3px;min-width:0">
+<span style="font:600 13px/1.2 Manrope;color:{{ t.titleColor }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.title }}</span>
+<span style="font:400 10px/1 'IBM Plex Mono';color:#5A5854">{{ t.sub }}</span>
+</span>
+<span style="font:400 10px/1 'IBM Plex Mono';color:#6E6C67">{{ t.fmt }}</span>
+<span style="font:500 11px/1 'IBM Plex Mono';color:#8E8C86;text-align:right">{{ t.dur }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ onArtist }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="position:relative;height:280px;background:repeating-linear-gradient(115deg,#16161A 0 9px,#111114 9px 18px);border-bottom:1px solid #1E1E22;display:flex;align-items:flex-end;padding:0 44px 26px">
+<div style="position:absolute;top:16px;left:44px;font:500 10px/1 'IBM Plex Mono';color:#5A5854;letter-spacing:.1em">фото артиста · 2400×720</div>
+<div onClick="{{ back }}" style="position:absolute;top:16px;right:44px;font:600 10px/1 'IBM Plex Mono';letter-spacing:.14em;color:#8E8C86;cursor:pointer" style-hover="{{ hoverText }}">← НАЗАД</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:9px"><div style="width:6px;height:6px;background:#D8452B"></div><span style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.2em;color:#D8452B">АРТИСТ · БЕЗ ГЕОБЛОКА</span></div>
+<h2 style="margin:0;font:800 68px/0.92 Manrope;letter-spacing:-.04em">{{ artist.name }}</h2>
+<div style="font:400 12px/1 'IBM Plex Mono';color:#8E8C86;letter-spacing:.08em">{{ artist.meta }}</div>
+</div>
+</div>
+<div style="{{ padWrap }}">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:#1E1E22;border:1px solid #1E1E22;margin-bottom:34px">
+<sc-for list="{{ artistStats }}" as="s" hint-placeholder-count="4">
+<div style="background:#0E0E10;padding:16px 18px;display:flex;flex-direction:column;gap:7px">
+<div style="font:600 9px/1 'IBM Plex Mono';letter-spacing:.16em;color:#6E6C67">{{ s.k }}</div>
+<div style="font:600 22px/1 Manrope;letter-spacing:-.01em">{{ s.v }}</div>
+</div>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:40px;align-items:start">
+<div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+<div style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.18em;color:#4E4C48">ПОПУЛЯРНОЕ</div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ trackRows }}" as="t" hint-placeholder-count="5">
+<div onClick="{{ t.play }}" style="{{ t.rowStyle }}" style-hover="{{ hoverRow }}">
+<span style="font:500 11px/1 'IBM Plex Mono';color:{{ t.numColor }}">{{ t.num }}</span>
+<span style="font:600 13px/1.2 Manrope;color:{{ t.titleColor }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.title }}</span>
+<span style="font:400 10px/1 'IBM Plex Mono';color:#6E6C67">{{ t.fmt }}</span>
+<span style="font:500 11px/1 'IBM Plex Mono';color:#8E8C86;text-align:right">{{ t.dur }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.18em;color:#4E4C48">ДИСКОГРАФИЯ</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<sc-for list="{{ discography }}" as="a" hint-placeholder-count="4">
+<div onClick="{{ a.open }}" style="display:flex;flex-direction:column;gap:9px;cursor:pointer" style-hover="{{ hoverCard }}">
+<div style="aspect-ratio:1;background:repeating-linear-gradient(135deg,#17171A 0 7px,#121215 7px 14px);border:1px solid #26262A;display:flex;align-items:center;justify-content:center"><span style="font:500 9px/1 'IBM Plex Mono';color:#5A5854">обложка</span></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font:600 12px/1.2 Manrope">{{ a.title }}</span><span style="font:400 10px/1 'IBM Plex Mono';color:#6E6C67">{{ a.meta }}</span></div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ onLibrary }}" hint-placeholder-val="{{ false }}">
+<div style="{{ padWrap }}">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid #1E1E22;margin-bottom:22px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.2em;color:#D8452B">ЛОКАЛЬНОЕ ХРАНИЛИЩЕ · НЕ ИНДЕКСИРУЕТСЯ</div>
+<h2 style="margin:0;font:700 34px/1 Manrope;letter-spacing:-.02em">Библиотека</h2>
+</div>
+<div style="font:400 11px/1.6 'IBM Plex Mono';color:#6E6C67;text-align:right">{{ libCount }} треков · 14.2 ГБ<br>синхронизация 3 устройства</div>
+</div>
+<div style="display:grid;grid-template-columns:30px minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) auto 52px;gap:14px;padding:11px 10px;font:600 9px/1 'IBM Plex Mono';letter-spacing:.16em;color:#4E4C48;border-bottom:1px solid #1E1E22;white-space:nowrap">
+<span>#</span><span>НАЗВАНИЕ</span><span>АРТИСТ</span><span>РЕЛИЗ</span><span>ФОРМАТ</span><span style="text-align:right">ВРЕМЯ</span>
+</div>
+<sc-for list="{{ libRows }}" as="t" hint-placeholder-count="9">
+<div onClick="{{ t.play }}" style="{{ t.libStyle }}" style-hover="{{ hoverRow }}">
+<span style="font:500 11px/1 'IBM Plex Mono';color:{{ t.numColor }}">{{ t.num }}</span>
+<span style="font:600 13px/1.2 Manrope;color:{{ t.titleColor }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.title }}</span>
+<span style="font:400 11px/1 'IBM Plex Mono';color:#8E8C86;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.artist }}</span>
+<span style="font:400 11px/1 'IBM Plex Mono';color:#6E6C67;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.album }}</span>
+<span style="font:400 10px/1 'IBM Plex Mono';color:#6E6C67">{{ t.fmt }}</span>
+<span style="font:500 11px/1 'IBM Plex Mono';color:#8E8C86;text-align:right">{{ t.dur }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;min-height:0;overflow-y:auto;display:flex;justify-content:center;padding:34px 20px;background:repeating-linear-gradient(45deg,#0C0C0E 0 12px,#0A0A0B 12px 24px)">
+<div style="width:390px;flex:none;height:800px;background:#0B0B0C;border:1px solid #2E2E33;display:flex;flex-direction:column;overflow:hidden">
+<div style="height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font:500 10px/1 'IBM Plex Mono';color:#8E8C86"><span>9:41</span><span>{{ serverName }} · FLAC</span></div>
+<div style="flex:none;padding:6px 16px 14px;display:flex;flex-direction:column;gap:14px;border-bottom:1px solid #1E1E22">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;background:#D8452B"></div><span style="font:700 11px/1 Manrope;letter-spacing:.18em">PRIVY<span style="color:#6E6C67">/</span>STREAM</span></div>
+<span onClick="{{ goServers }}" style="font:600 9px/1 'IBM Plex Mono';color:#D8452B;letter-spacing:.12em;cursor:pointer">{{ serverHost }} ▾</span>
+</div>
+<div style="display:flex;align-items:center;gap:9px;border:1px solid #26262A;background:#101012;padding:10px 12px">
+<span style="font:600 11px/1 'IBM Plex Mono';color:#4E4C48">/</span>
+<input value="{{ query }}" onChange="{{ onQuery }}" placeholder="поиск" style="flex:1;background:transparent;border:none;color:#E8E6E1;font:500 12px/1 'IBM Plex Mono';outline:none">
+</div>
+</div>
+<div style="flex:1;min-height:0;overflow-y:auto;padding:16px 16px 10px;display:flex;flex-direction:column;gap:22px">
+<sc-if value="{{ onServers }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="font:600 9px/1 'IBM Plex Mono';letter-spacing:.18em;color:#4E4C48">УЗЛЫ · {{ onlineCount }} ОНЛАЙН</div>
+<sc-for list="{{ serverRows }}" as="s" hint-placeholder-count="4">
+<div onClick="{{ s.connect }}" style="display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid #17171B;cursor:pointer">
+<div style="{{ s.dotStyle }}"></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+<span style="font:600 13px/1.2 Manrope;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ s.name }}</span>
+<span style="font:400 10px/1 'IBM Plex Mono';color:#5A5854;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ s.host }} · {{ s.mode }}</span>
+</div>
+<span style="font:500 9px/1 'IBM Plex Mono';letter-spacing:.1em;color:{{ s.statusColor }};text-align:right">{{ s.statusLabel }}<br><span style="color:#5A5854">{{ s.pingLabel }}</span></span>
+</div>
+</sc-for>
+<div style="display:flex;gap:8px">
+<div style="flex:1;min-width:0;display:flex;align-items:center;gap:8px;border:1px solid #26262A;background:#101012;padding:11px 12px">
+<span style="font:600 10px/1 'IBM Plex Mono';color:#4E4C48">://</span>
+<input value="{{ newHost }}" onChange="{{ onNewHost }}" placeholder="10.0.0.5:8443" style="flex:1;min-width:0;background:transparent;border:none;color:#E8E6E1;font:500 12px/1 'IBM Plex Mono';outline:none">
+</div>
+<div onClick="{{ addServer }}" style="padding:12px 14px;background:#D8452B;color:#0B0B0C;font:700 10px/1 'IBM Plex Mono';letter-spacing:.12em;cursor:pointer;display:flex;align-items:center">ДОБАВИТЬ</div>
+</div>
+<sc-if value="{{ srvErr }}" hint-placeholder-val="{{ false }}">
+<div style="padding:9px 11px;background:rgba(216,69,43,.1);border-left:2px solid #D8452B;font:500 10px/1.4 'IBM Plex Mono';color:#F0765C">{{ srvErr }}</div>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ notServers }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font:600 9px/1 'IBM Plex Mono';letter-spacing:.18em;color:#4E4C48">НА УЗЛЕ «{{ serverName }}»</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<sc-for list="{{ mobileShelf }}" as="a" hint-placeholder-count="4">
+<div onClick="{{ a.open }}" style="display:flex;flex-direction:column;gap:8px;cursor:pointer">
+<div style="position:relative;aspect-ratio:1;background:repeating-linear-gradient(135deg,#17171A 0 7px,#121215 7px 14px);border:1px solid #26262A;display:flex;align-items:center;justify-content:center"><span style="font:500 9px/1 'IBM Plex Mono';color:#5A5854">обложка</span><span style="position:absolute;top:0;left:0;padding:3px 5px;background:#0B0B0C;font:600 8px/1 'IBM Plex Mono';color:#8E8C86">{{ a.code }}</span></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font:600 12px/1.2 Manrope">{{ a.title }}</span><span style="font:400 10px/1 'IBM Plex Mono';color:#6E6C67">{{ a.artist }}</span></div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font:600 9px/1 'IBM Plex Mono';letter-spacing:.18em;color:#4E4C48">ОЧЕРЕДЬ</div>
+<sc-for list="{{ mobileQueue }}" as="t" hint-placeholder-count="5">
+<div onClick="{{ t.play }}" style="{{ t.mobStyle }}">
+<span style="font:500 10px/1 'IBM Plex Mono';color:{{ t.numColor }};width:18px">{{ t.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+<span style="font:600 13px/1.2 Manrope;color:{{ t.titleColor }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.title }}</span>
+<span style="font:400 10px/1 'IBM Plex Mono';color:#5A5854;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.artist }}</span>
+</span>
+<span style="font:500 10px/1 'IBM Plex Mono';color:#6E6C67">{{ t.dur }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+<div onClick="{{ openFull }}" style="flex:none;border-top:1px solid #26262A;background:#121214;padding:11px 14px;display:flex;align-items:center;gap:12px;cursor:pointer">
+<div style="width:38px;height:38px;flex:none;background:repeating-linear-gradient(135deg,#1D1D21 0 5px,#141417 5px 10px);border:1px solid #2E2E33"></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+<span style="font:600 12px/1.2 Manrope;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ current.title }}</span>
+<span style="font:400 10px/1 'IBM Plex Mono';color:#6E6C67">{{ current.artist }}</span>
+</div>
+<div onClick="{{ toggle }}" style="width:32px;height:32px;flex:none;background:#D8452B;color:#0B0B0C;display:flex;align-items:center;justify-content:center;font:700 12px/1 Manrope">{{ playGlyph }}</div>
+</div>
+<div style="flex:none;display:flex;border-top:1px solid #1E1E22;background:#0E0E10">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+<div onClick="{{ t.go }}" style="{{ t.style }}">{{ t.label }}</div>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="flex:none;height:76px;border-top:1px solid #26262A;background:#101012;display:grid;grid-template-columns:264px 1fr 264px;align-items:center;gap:18px;padding:0 18px">
+<div onClick="{{ openFull }}" style="display:flex;align-items:center;gap:11px;cursor:pointer;min-width:0">
+<div style="width:44px;height:44px;flex:none;background:repeating-linear-gradient(135deg,#1D1D21 0 5px,#141417 5px 10px);border:1px solid #2E2E33"></div>
+<div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+<span style="font:600 13px/1.2 Manrope;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ current.title }}</span>
+<span style="font:400 10px/1 'IBM Plex Mono';color:#6E6C67;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ current.artist }} · {{ current.album }}</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:9px;min-width:0">
+<div style="display:flex;align-items:center;justify-content:center;gap:16px">
+<div onClick="{{ prev }}" style="font:500 12px/1 'IBM Plex Mono';color:#8E8C86;cursor:pointer" style-hover="{{ hoverText }}">◀◀</div>
+<div onClick="{{ toggle }}" style="width:34px;height:34px;background:#D8452B;color:#0B0B0C;display:flex;align-items:center;justify-content:center;font:700 12px/1 Manrope;cursor:pointer" style-hover="{{ hoverAccent }}">{{ playGlyph }}</div>
+<div onClick="{{ next }}" style="font:500 12px/1 'IBM Plex Mono';color:#8E8C86;cursor:pointer" style-hover="{{ hoverText }}">▶▶</div>
+</div>
+<div style="display:flex;align-items:center;gap:11px">
+<span style="font:500 10px/1 'IBM Plex Mono';color:#8E8C86;width:36px">{{ elapsed }}</span>
+<div onClick="{{ seek }}" style="flex:1;height:4px;background:#26262A;cursor:pointer;position:relative">
+<div style="{{ progressStyle }}"></div>
+</div>
+<span style="font:500 10px/1 'IBM Plex Mono';color:#8E8C86;width:36px">{{ current.dur }}</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:flex-end;gap:14px">
+<div style="display:flex;align-items:flex-end;gap:2px;height:22px">
+<sc-for list="{{ meter }}" as="b" hint-placeholder-count="14">
+<div style="{{ b.style }}"></div>
+</sc-for>
+</div>
+<div style="font:600 9px/1.5 'IBM Plex Mono';color:#6E6C67;letter-spacing:.12em;text-align:right">24 BIT / 96 kHz<br>NO LOG</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</sc-if>
+
+<sc-if value="{{ isFull }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:#0A0A0B;z-index:40;display:flex;flex-direction:column;animation:pv-rise .25s ease both">
+<div style="flex:none;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid #1E1E22">
+<div style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.2em;color:#D8452B">ВОСПРОИЗВЕДЕНИЕ · ПРИВАТНАЯ СЕССИЯ</div>
+<div onClick="{{ closeFull }}" style="font:600 10px/1 'IBM Plex Mono';letter-spacing:.16em;color:#8E8C86;cursor:pointer" style-hover="{{ hoverText }}">СВЕРНУТЬ ✕</div>
+</div>
+<div style="flex:1;min-height:0;display:grid;grid-template-columns:1.25fr .75fr">
+<div style="display:flex;flex-direction:column;justify-content:center;gap:32px;padding:40px 56px;min-width:0">
+<div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-end">
+<div style="width:210px;height:210px;flex:none;background:repeating-linear-gradient(135deg,#17171A 0 7px,#121215 7px 14px);border:1px solid #2E2E33;display:flex;align-items:center;justify-content:center"><span style="font:500 10px/1.5 'IBM Plex Mono';color:#5A5854;text-align:center">обложка<br>1000×1000</span></div>
+<div style="flex:1 1 340px;display:flex;flex-direction:column;gap:12px;min-width:0">
+<div style="font:600 11px/1 'IBM Plex Mono';letter-spacing:.16em;color:#8E8C86">{{ current.album }}</div>
+<h2 style="margin:0;font-family:Manrope;font-weight:800;font-size:clamp(30px,3.6vw,54px);line-height:.95;letter-spacing:-.035em;overflow-wrap:anywhere">{{ current.title }}</h2>
+<div style="font:500 14px/1 'IBM Plex Mono';color:#D8452B">{{ current.artist }}</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:flex-end;gap:2px;height:84px;border-bottom:1px solid #1E1E22;padding-bottom:2px">
+<sc-for list="{{ wave }}" as="b" hint-placeholder-count="64">
+<div style="{{ b.style }}"></div>
+</sc-for>
+</div>
+<div style="display:flex;justify-content:space-between;font:500 11px/1 'IBM Plex Mono';color:#8E8C86"><span>{{ elapsed }}</span><span style="color:#4E4C48">{{ current.fmt }} · 1411 kbps</span><span>{{ current.dur }}</span></div>
+</div>
+<div style="display:flex;align-items:center;gap:20px">
+<div onClick="{{ prev }}" style="padding:12px 16px;border:1px solid #2E2E33;font:500 12px/1 'IBM Plex Mono';color:#C8C6C0;cursor:pointer" style-hover="{{ hoverTab }}">◀◀</div>
+<div onClick="{{ toggle }}" style="width:62px;height:62px;background:#D8452B;color:#0B0B0C;display:flex;align-items:center;justify-content:center;font:700 20px/1 Manrope;cursor:pointer" style-hover="{{ hoverAccent }}">{{ playGlyph }}</div>
+<div onClick="{{ next }}" style="padding:12px 16px;border:1px solid #2E2E33;font:500 12px/1 'IBM Plex Mono';color:#C8C6C0;cursor:pointer" style-hover="{{ hoverTab }}">▶▶</div>
+<div style="display:flex;gap:8px;margin-left:12px">
+<div style="padding:12px 14px;border:1px solid #2E2E33;font:600 10px/1 'IBM Plex Mono';letter-spacing:.12em;color:#8E8C86;cursor:pointer" style-hover="{{ hoverTab }}">ПОВТОР</div>
+<div style="padding:12px 14px;border:1px solid #2E2E33;font:600 10px/1 'IBM Plex Mono';letter-spacing:.12em;color:#8E8C86;cursor:pointer" style-hover="{{ hoverTab }}">СЛУЧАЙНО</div>
+</div>
+</div>
+</div>
+<div style="border-left:1px solid #1E1E22;background:#0D0D0F;display:flex;flex-direction:column;min-height:0">
+<div style="flex:none;padding:18px 22px 12px;font:600 10px/1 'IBM Plex Mono';letter-spacing:.18em;color:#4E4C48;border-bottom:1px solid #1E1E22">ОЧЕРЕДЬ · {{ libCount }}</div>
+<div style="flex:1;min-height:0;overflow-y:auto">
+<sc-for list="{{ libRows }}" as="t" hint-placeholder-count="9">
+<div onClick="{{ t.play }}" style="{{ t.queueStyle }}" style-hover="{{ hoverRow }}">
+<span style="font:500 10px/1 'IBM Plex Mono';color:{{ t.numColor }};width:20px">{{ t.num }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+<span style="font:600 12px/1.2 Manrope;color:{{ t.titleColor }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.title }}</span>
+<span style="font:400 10px/1 'IBM Plex Mono';color:#5A5854;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.artist }}</span>
+</span>
+<span style="font:500 10px/1 'IBM Plex Mono';color:#6E6C67">{{ t.dur }}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:none;padding:14px 22px;border-top:1px solid #1E1E22;display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;justify-content:space-between;font:400 10px/1 'IBM Plex Mono';color:#6E6C67"><span>ИСТОРИЯ</span><span style="color:#D8452B">НЕ ПИШЕТСЯ</span></div>
+<div style="display:flex;justify-content:space-between;font:400 10px/1 'IBM Plex Mono';color:#6E6C67"><span>УЗЕЛ</span><span style="color:#C8C6C0">{{ serverBadge }}</span></div>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+const A = (code,title,artist,year,tag,flagged,dim) => ({code,title,artist,year,tag,flagged,dim});
+
+const ALBUMS = [
+  A('AR-014','Полынный свет','Тихая Комната','2024','эксперимент',false,'1000×1000'),
+  A('AR-021','Запрещённые письма','Северный Шум','2023','пост-панк',true,'1000×1000'),
+  A('AR-033','Ночной эфир','Мальва','2025','эмбиент',false,'1000×1000'),
+  A('AR-047','Красная линия','Отдельный Канал','2022','нойз',true,'1000×1000'),
+  A('AR-052','Молчание не входит','Кама','2024','фолк',false,'1000×1000'),
+  A('AR-060','Свободная частота','Тихая Комната','2021','краут',false,'1000×1000'),
+  A('AR-066','Без подписи','Гость','2025','драм-н-бэйс',true,'1000×1000'),
+  A('AR-071','Территория','Мальва','2023','минимал',false,'1000×1000')
+];
+
+const TRACKS = [
+  {title:'Полынный свет',artist:'Тихая Комната',album:'Полынный свет',dur:'4:12',sec:252,fmt:'FLAC'},
+  {title:'Ток по проводам',artist:'Тихая Комната',album:'Полынный свет',dur:'3:38',sec:218,fmt:'FLAC'},
+  {title:'Радиомолчание',artist:'Северный Шум',album:'Запрещённые письма',dur:'5:04',sec:304,fmt:'FLAC'},
+  {title:'Письмо без адреса',artist:'Северный Шум',album:'Запрещённые письма',dur:'2:56',sec:176,fmt:'ALAC'},
+  {title:'Ночной эфир',artist:'Мальва',album:'Ночной эфир',dur:'6:21',sec:381,fmt:'FLAC'},
+  {title:'Красная линия',artist:'Отдельный Канал',album:'Красная линия',dur:'3:11',sec:191,fmt:'FLAC'},
+  {title:'Молчание не входит',artist:'Кама',album:'Молчание не входит',dur:'4:45',sec:285,fmt:'MP3 320'},
+  {title:'Свободная частота',artist:'Тихая Комната',album:'Свободная частота',dur:'7:02',sec:422,fmt:'FLAC'},
+  {title:'Без подписи',artist:'Гость',album:'Без подписи',dur:'3:29',sec:209,fmt:'FLAC'}
+];
+
+const FILTERS = ['ВСЁ','НОВОЕ','ЗАПРЕЩЁННОЕ ГДЕ-ТО','FLAC','ЛОКАЛЬНОЕ'];
+
+const SERVERS = [
+  {id:'eu3', name:'open.eu3', host:'eu3.privy.stream:8443', owner:'alt_arkhiv', releases:5, ping:12, status:'online', mode:'открытый', note:'публичный узел, регистрация свободная'},
+  {id:'ru-ind', name:'independent', host:'ind.local:9000', owner:'k_volkov', releases:2, ping:34, status:'online', mode:'по инвайту', note:'самиздат-лейблы, ключ по приглашению'},
+  {id:'nl-vault', name:'vault-nl', host:'89.211.4.77:8443', owner:'vault_op', releases:2, ping:78, status:'online', mode:'открытый', note:'архив редких изданий, отдаёт FLAC 24/96'},
+  {id:'home', name:'мой домашний', host:'192.168.1.14:8443', owner:'ты', releases:0, ping:2, status:'offline', mode:'приватный', note:'узел на твоём железе, виден только тебе'}
+];
+
+const SRV_OF = ['eu3','ru-ind','eu3','nl-vault','eu3','ru-ind','nl-vault','eu3'];
+ALBUMS.forEach((a, i) => { a.server = SRV_OF[i]; });
+
+class Component extends DCLogic {
+  state = {
+    authed: false, mode: 'login', login: '', pass: '', birth: '', err: '',
+    screen: 'catalog', albumIdx: 0, artistName: 'Тихая Комната',
+    view: 'desktop', dense: false, full: false,
+    playing: true, idx: 0, pos: 74, query: '', filter: 'ВСЁ', tick: 0,
+    servers: SERVERS.map(s => ({...s})), serverId: 'eu3', newHost: '', srvErr: '', connecting: ''
+  };
+
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      if (!this.state.playing) { this.setState(s => ({tick: s.tick + 1})); return; }
+      this.setState(s => ({pos: (s.pos + 1) % 100, tick: s.tick + 1}));
+    }, 900);
+  }
+  componentWillUnmount() { clearInterval(this.timer); }
+
+  set = (p) => this.setState(p);
+
+  fmtTime(sec) {
+    const m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+    return m + ':' + String(s).padStart(2, '0');
+  }
+
+  rowBase(active, cols) {
+    return {
+      display: 'grid', gridTemplateColumns: cols, gap: '14px', alignItems: 'center',
+      padding: (this.state.dense ? '8px' : '12px') + ' 10px', cursor: 'pointer',
+      borderBottom: '1px solid #17171B',
+      background: active ? 'rgba(216,69,43,.08)' : 'transparent',
+      borderLeft: active ? '2px solid #D8452B' : '2px solid transparent'
+    };
+  }
+
+  renderVals() {
+    const st = this.state;
+    const dense = st.dense;
+    const current = TRACKS[st.idx];
+    const album = ALBUMS[st.albumIdx];
+
+    const server = st.servers.find(s => s.id === st.serverId) || st.servers[0];
+    const onServer = ALBUMS.filter(a => a.server === st.serverId);
+
+    const q = st.query.trim().toLowerCase();
+    let shelf = onServer.filter(a => !q || (a.title + ' ' + a.artist + ' ' + a.tag).toLowerCase().includes(q));
+    if (st.filter === 'ЗАПРЕЩЁННОЕ ГДЕ-ТО') shelf = shelf.filter(a => a.flagged);
+    if (st.filter === 'НОВОЕ') shelf = shelf.filter(a => Number(a.year) >= 2024);
+
+    const openAlbum = (a) => () => this.set({screen: 'album', albumIdx: ALBUMS.indexOf(a), artistName: a.artist});
+    const decorate = (list) => list.map(a => ({...a, meta: a.year + ' · ' + a.tag.toUpperCase(), open: openAlbum(a)}));
+
+    const albumTracks = TRACKS.filter(t => t.album === album.title);
+    const src = albumTracks.length ? albumTracks : TRACKS.slice(0, 5);
+    const play = (t) => () => this.set({idx: TRACKS.indexOf(t), playing: true, pos: 0});
+
+    const mkRow = (t, i) => {
+      const active = TRACKS.indexOf(t) === st.idx;
+      return {
+        ...t, num: String(i + 1).padStart(2, '0'), sub: t.artist + ' · ' + t.fmt,
+        numColor: active ? '#D8452B' : '#5A5854',
+        titleColor: active ? '#F2F0EB' : '#C8C6C0',
+        play: play(t),
+        rowStyle: this.rowBase(active, '30px minmax(0,1fr) auto 52px'),
+        libStyle: this.rowBase(active, '30px minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) auto 52px'),
+        queueStyle: {display:'flex', alignItems:'center', gap:'12px', padding:'11px 22px', cursor:'pointer', borderBottom:'1px solid #16161A', background: active ? 'rgba(216,69,43,.08)' : 'transparent'},
+        mobStyle: {display:'flex', alignItems:'center', gap:'11px', padding: (dense?'8px':'11px') + ' 0', borderBottom:'1px solid #17171B', cursor:'pointer', background: active ? 'rgba(216,69,43,.07)' : 'transparent'}
+      };
+    };
+
+    const navDef = [
+      ['СЕРВЕРЫ', 'servers', String(st.servers.filter(s => s.status === 'online').length) + '/' + st.servers.length],
+      ['КАТАЛОГ', 'catalog', String(onServer.length)],
+      ['БИБЛИОТЕКА', 'library', String(TRACKS.length)],
+      ['АРТИСТ', 'artist', '—'],
+      ['РЕЛИЗ', 'album', '—']
+    ];
+    const nav = navDef.map(([label, key, count]) => ({
+      label, count,
+      go: () => this.set({screen: key}),
+      style: {
+        display:'flex', alignItems:'center', justifyContent:'space-between',
+        padding: (dense ? '8px' : '11px') + ' 18px', cursor:'pointer',
+        color: st.screen === key ? '#F2F0EB' : '#8E8C86',
+        background: st.screen === key ? '#17171A' : 'transparent',
+        borderLeft: st.screen === key ? '2px solid #D8452B' : '2px solid transparent'
+      }
+    }));
+
+    const tabDef = [['ПОЛКА','catalog'],['УЗЛЫ','servers'],['ФОНОТЕКА','library'],['Я','artist']];
+    const tabs = tabDef.map(([label, key], i) => ({
+      label,
+      go: () => this.set({screen: key}),
+      style: {flex:1, padding:'14px 0', textAlign:'center', font:"600 9px/1 'IBM Plex Mono'", letterSpacing:'.12em', cursor:'pointer', color: st.screen === key ? '#D8452B' : '#6E6C67', borderRight: i < 3 ? '1px solid #1E1E22' : 'none'}
+    }));
+
+    const seed = st.tick;
+    const meter = Array.from({length: 14}, (_, i) => {
+      const h = st.playing ? 18 + Math.abs(Math.sin((seed + i) * 0.9)) * 82 : 8;
+      return {style: {width:'3px', height: h + '%', background: i > 10 ? '#D8452B' : '#4A4A50', transition:'height .35s ease'}};
+    });
+    const wave = Array.from({length: 72}, (_, i) => {
+      const base = 22 + Math.abs(Math.sin(i * 0.42) * Math.cos(i * 0.17)) * 74;
+      const passed = (i / 72) * 100 <= st.pos;
+      return {style: {flex:1, height: base + '%', background: passed ? '#D8452B' : '#26262A', transition:'background .2s'}};
+    });
+
+    const artistAlbums = ALBUMS.filter(a => a.artist === st.artistName);
+
+    return {
+      isAuth: !st.authed, isApp: st.authed,
+      isReg: st.mode === 'register',
+      submitLabel: st.mode === 'register' ? 'СОЗДАТЬ КЛЮЧ' : 'ВОЙТИ',
+      authHint: st.mode === 'register' ? 'RS256 · КЛЮЧ ЛОКАЛЬНО' : 'REFRESH · РОТАЦИЯ',
+      authError: st.err,
+      loginVal: st.login, passVal: st.pass, birthVal: st.birth,
+      onLogin: e => this.set({login: e.target.value, err: ''}),
+      onPass: e => this.set({pass: e.target.value, err: ''}),
+      onBirth: e => this.set({birth: e.target.value, err: ''}),
+      setModeLogin: () => this.set({mode: 'login', err: ''}),
+      setModeReg: () => this.set({mode: 'register', err: ''}),
+      submit: () => {
+        if (server.status !== 'online') return this.set({err: '503 · узел ' + server.host + ' не отвечает'});
+        if (!st.login.trim() || st.pass.length < 4) return this.set({err: '401 · логин или пароль неверны'});
+        if (st.mode === 'register' && !/^\d{4}-\d{2}-\d{2}$/.test(st.birth)) return this.set({err: '400 · birth_date: ожидается YYYY-MM-DD'});
+        this.set({authed: true, err: ''});
+      },
+      logout: () => this.set({authed: false, full: false, pass: ''}),
+
+      isDesktop: st.view === 'desktop', isMobile: st.view === 'mobile',
+      setDesktop: () => this.set({view: 'desktop', full: false}),
+      setMobile: () => this.set({view: 'mobile', full: false}),
+      tabDesktop: {padding:'7px 11px', font:"600 10px/1 'IBM Plex Mono'", letterSpacing:'.14em', cursor:'pointer', color: st.view==='desktop' ? '#0B0B0C' : '#8E8C86', background: st.view==='desktop' ? '#D8452B' : 'transparent'},
+      tabMobile: {padding:'7px 11px', font:"600 10px/1 'IBM Plex Mono'", letterSpacing:'.14em', cursor:'pointer', color: st.view==='mobile' ? '#0B0B0C' : '#8E8C86', background: st.view==='mobile' ? '#D8452B' : 'transparent', borderLeft:'1px solid #26262A'},
+      toggleDensity: () => this.set({dense: !dense}),
+      densityLabel: dense ? 'ПЛОТНО' : 'ВОЗДУШНО',
+
+      nav, tabs,
+      breadcrumb: '/' + st.screen + (st.screen === 'album' ? ' / ' + album.code : ''),
+      onCatalog: st.screen === 'catalog', onAlbum: st.screen === 'album',
+      onArtist: st.screen === 'artist', onLibrary: st.screen === 'library',
+      onServers: st.screen === 'servers', notServers: st.screen !== 'servers',
+
+      server, serverName: server.name, serverHost: server.host,
+      serverBadge: server.name + ' · ' + server.ping + ' ms',
+      goServers: () => this.set({screen: 'servers'}),
+      onlineCount: st.servers.filter(s => s.status === 'online').length,
+      serverRows: st.servers.map(s => {
+        const active = s.id === st.serverId;
+        const busy = st.connecting === s.id;
+        return {
+          ...s,
+          releasesOn: String(ALBUMS.filter(a => a.server === s.id).length),
+          pingLabel: s.status === 'online' ? s.ping + ' ms' : '—',
+          statusLabel: busy ? 'ПОДКЛЮЧЕНИЕ…' : active ? 'ПОДКЛЮЧЁН' : s.status === 'online' ? 'ДОСТУПЕН' : 'НЕ ОТВЕЧАЕТ',
+          statusColor: busy ? '#E8C24B' : active ? '#D8452B' : s.status === 'online' ? '#7FAE6B' : '#5A5854',
+          dotStyle: {width:'7px', height:'7px', flex:'none', marginTop:'7px', background: s.status === 'online' ? (active ? '#D8452B' : '#7FAE6B') : '#3A3A40', animation: busy ? 'pv-blink 0.7s infinite' : 'none'},
+          actionLabel: active ? 'ТЕКУЩИЙ' : s.status === 'online' ? 'ПОДКЛЮЧИТЬСЯ' : 'ПОВТОР',
+          actionStyle: {padding:'9px 13px', border:'1px solid ' + (active ? '#D8452B' : '#2E2E33'), font:"600 10px/1 'IBM Plex Mono'", letterSpacing:'.12em', color: active ? '#D8452B' : '#C8C6C0', cursor: active ? 'default' : 'pointer', whiteSpace:'nowrap', textAlign:'center'},
+          rowStyle: {display:'flex', flexWrap:'wrap', gap:'14px 18px', alignItems:'center', padding:(dense?'12px':'17px')+' 14px', borderBottom:'1px solid #17171B', background: active ? 'rgba(216,69,43,.07)' : 'transparent', borderLeft:'2px solid ' + (active ? '#D8452B' : 'transparent')},
+          subLine: s.owner + ' · ' + s.mode + ' · ' + s.note,
+          chipStyle: {display:'flex', alignItems:'center', gap:'7px', padding:'9px 11px', border:'1px solid ' + (active ? '#D8452B' : '#2E2E33'), font:"500 11px/1 'IBM Plex Mono'", color: active ? '#F2F0EB' : '#8E8C86', background: active ? 'rgba(216,69,43,.08)' : 'transparent', cursor:'pointer'},
+          pick: () => this.set({serverId: s.id, srvErr: s.status === 'online' ? '' : '503 · ' + s.host + ' не отвечает'}),
+          connect: () => {
+            if (active) return;
+            if (s.status !== 'online') return this.set({srvErr: '503 · ' + s.host + ' не отвечает'});
+            this.set({connecting: s.id, srvErr: ''});
+            setTimeout(() => this.set({connecting: '', serverId: s.id, screen: 'catalog', query: '', filter: 'ВСЁ'}), 650);
+          }
+        };
+      }),
+      newHost: st.newHost,
+      onNewHost: e => this.set({newHost: e.target.value, srvErr: ''}),
+      srvErr: st.srvErr,
+      addServer: () => {
+        const h = st.newHost.trim();
+        if (!/^[\w.\-]+(:\d+)?$/.test(h)) return this.set({srvErr: '400 · адрес вида host:port, например 10.0.0.5:8443'});
+        if (st.servers.some(s => s.host === h)) return this.set({srvErr: 'узел уже в списке'});
+        const s = {id: 'u' + Date.now(), name: h.split(':')[0], host: h, owner: 'добавлен тобой', releases: 0, ping: 20 + Math.round(Math.random() * 60), status: 'online', mode: 'неизвестно', note: 'узел добавлен вручную, метаданные ещё не получены'};
+        this.setState(p => ({servers: [...p.servers, s], newHost: '', srvErr: ''}));
+      },
+      back: () => this.set({screen: 'catalog'}),
+      toArtist: () => this.set({screen: 'artist', artistName: album.artist}),
+
+      padWrap: {padding: dense ? '20px 26px 30px' : '34px 44px 46px'},
+      gridStyle: {display:'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(' + (dense ? 150 : 194) + 'px,1fr))', gap: dense ? '16px' : '26px', paddingTop: dense ? '20px' : '30px'},
+
+      total: onServer.length, found: shelf.length + '/' + onServer.length,
+      query: st.query, onQuery: e => this.set({query: e.target.value}),
+      filters: FILTERS.map(f => ({
+        label: f, pick: () => this.set({filter: f}),
+        style: {padding:'7px 12px', border:'1px solid ' + (st.filter===f ? '#D8452B' : '#26262A'), font:"600 10px/1 'IBM Plex Mono'", letterSpacing:'.12em', cursor:'pointer', color: st.filter===f ? '#D8452B' : '#8E8C86'}
+      })),
+      shelf: decorate(shelf), shelfEmpty: shelf.length === 0,
+      emptyNote: onServer.length === 0 ? 'Узел «' + server.name + '» пока ничего не раздаёт — владелец не залил фонотеку.' : 'На этом узле ничего не найдено по запросу.',
+      mobileShelf: decorate(onServer.slice(0, 4)),
+
+      album: {...album, meta: album.year + ' · ' + album.tag.toUpperCase(), tracksCount: src.length, length: '38:41'},
+      albumMeta: [
+        {k:'КАТАЛОГ', v:album.code}, {k:'ГОД', v:album.year}, {k:'ЖАНР', v:album.tag},
+        {k:'ФОРМАТ', v:'FLAC 24/96'}, {k:'УЗЕЛ', v:server.name}, {k:'ГЕОБЛОК', v:'НЕТ'},
+        {k:'МЕТКА', v:album.flagged ? '18+ / БЕЗ ФИЛЬТРА' : 'БЕЗ МЕТОК'}
+      ],
+      playAlbum: () => this.set({idx: TRACKS.indexOf(src[0]), playing: true, pos: 0}),
+      trackRows: src.map(mkRow),
+      libRows: TRACKS.map(mkRow),
+      mobileQueue: TRACKS.slice(0, 6).map(mkRow),
+      libCount: TRACKS.length,
+
+      artist: {name: st.artistName, meta: (artistAlbums.length || 1) + ' РЕЛИЗА · 2019—2025 · НЕЗАВИСИМО'},
+      artistStats: [
+        {k:'СЛУШАТЕЛЕЙ', v:'48 210'}, {k:'РЕЛИЗОВ', v:String(artistAlbums.length || 1)},
+        {k:'СТРАН БЕЗ БЛОКА', v:'182'}, {k:'В БИБЛИОТЕКАХ', v:'9 340'}
+      ],
+      discography: decorate(artistAlbums.length ? artistAlbums : ALBUMS.slice(0, 4)),
+
+      current, playGlyph: st.playing ? '❙❙' : '▶',
+      toggle: () => this.set({playing: !st.playing}),
+      next: () => this.set({idx: (st.idx + 1) % TRACKS.length, pos: 0, playing: true}),
+      prev: () => this.set({idx: (st.idx - 1 + TRACKS.length) % TRACKS.length, pos: 0, playing: true}),
+      seek: e => {
+        const r = e.currentTarget.getBoundingClientRect();
+        this.set({pos: Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100))});
+      },
+      elapsed: this.fmtTime(current.sec * st.pos / 100),
+      progressStyle: {position:'absolute', top:0, left:0, height:'100%', width: st.pos + '%', background:'#D8452B'},
+      meter, wave,
+      buffer: (st.playing ? 96 : 100) + '%',
+
+      isFull: st.full,
+      openFull: () => this.set({full: true}),
+      closeFull: () => this.set({full: false}),
+
+      hoverAccent: {background:'#F0563A'},
+      hoverTab: {borderColor:'#4A4A50', color:'#E8E6E1'},
+      hoverNav: {color:'#E8E6E1', background:'#141417'},
+      hoverCard: {opacity:.82},
+      hoverRow: {background:'rgba(255,255,255,.03)'},
+      hoverText: {color:'#E8E6E1'}
+    };
+  }
+}
+</script>
+</body>
+</html>

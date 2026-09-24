@@ -1,0 +1,10 @@
+node_modules
+dist
+src-tauri/target
+src-tauri/gen
+*.log
+.DS_Store
+.env
+
+# Рабочие заметки/планы, не для коммита
+CLIENT_BACKEND_PLAN.md

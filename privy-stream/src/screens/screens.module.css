@@ -1,0 +1,664 @@
+/* ================= Auth ================= */
+.auth {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  overflow: hidden;
+}
+.authLeft {
+  padding: 56px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid var(--line);
+  background: var(--bg-panel);
+}
+.pitch {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  max-width: 460px;
+}
+.pitchEyebrow {
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+.pitchTitle {
+  font: 700 52px/0.98 var(--font-display);
+  letter-spacing: -0.03em;
+  text-wrap: pretty;
+}
+.pitchText {
+  font: 400 15px/1.6 var(--font-display);
+  color: var(--text-3);
+  max-width: 390px;
+  text-wrap: pretty;
+}
+.pitchFacts {
+  display: flex;
+  gap: 28px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.factKey {
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  color: var(--text-4);
+}
+.factVal {
+  font: 500 13px/1 var(--font-mono);
+}
+.techLine {
+  font: 400 10px/1.6 var(--font-mono);
+  color: var(--text-6);
+  letter-spacing: 0.1em;
+}
+.authRight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+.card {
+  width: 100%;
+  max-width: 392px;
+  background: var(--bg-card);
+  border: 1px solid var(--line-ctrl);
+}
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line-ctrl);
+}
+.tab {
+  flex: 1;
+  padding: 16px 0;
+  text-align: center;
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.16em;
+  color: var(--text-4);
+}
+.tab + .tab {
+  border-left: 1px solid var(--line-ctrl);
+}
+.tab:hover {
+  color: var(--text);
+}
+.tabActive,
+.tabActive:hover {
+  color: var(--text);
+  background: var(--bg-active);
+}
+.cardBody {
+  padding: 28px 26px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.nodePicker {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.chips {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 11px;
+  border: 1px solid var(--line-input);
+  font: 500 11px/1 var(--font-mono);
+  color: var(--text-3);
+  min-width: 0;
+}
+.chip:hover {
+  border-color: var(--line-hover);
+}
+.chipActive,
+.chipActive:hover {
+  border-color: var(--accent);
+  color: var(--text-bright);
+  background: var(--accent-bg);
+}
+.chipAdd {
+  border-style: dashed;
+  color: var(--text-4);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  justify-content: center;
+}
+.chipAdd:hover {
+  color: var(--text);
+}
+.noNodes {
+  font: 500 13px/1.5 var(--font-display);
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+.addNode {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.addNodeRow {
+  display: flex;
+  gap: 7px;
+  align-items: stretch;
+}
+.addNodeInput {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-input);
+  border-color: var(--line-input);
+}
+.addNodeBtn {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.hint {
+  font: 400 10px/1.4 var(--font-mono);
+  color: var(--text-6);
+}
+.divider {
+  height: 1px;
+  background: var(--line);
+}
+.cardFoot {
+  display: flex;
+  justify-content: space-between;
+  font: 400 10px/1 var(--font-mono);
+  color: var(--text-6);
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+}
+
+/* ================= Servers ================= */
+.lede {
+  max-width: 420px;
+  font: 400 13px/1.6 var(--font-display);
+  color: var(--text-3);
+  text-wrap: pretty;
+}
+.addBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px 0 26px;
+}
+.addRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.addInput {
+  flex: 1 1 300px;
+  max-width: 420px;
+  padding: 11px 13px;
+}
+.addNote {
+  font: 400 10px/1.5 var(--font-mono);
+  color: var(--text-6);
+}
+.nodeList {
+  border-top: 1px solid var(--line);
+}
+.nodeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 18px;
+  align-items: center;
+  padding: var(--node-pad-y) 14px;
+  border-bottom: 1px solid var(--line-row);
+  border-left: 2px solid transparent;
+  cursor: pointer;
+}
+.nodeRow:hover {
+  background: var(--row-hover);
+}
+.nodeRowActive,
+.nodeRowActive:hover {
+  background: var(--accent-bg-soft);
+  border-left-color: var(--accent);
+  cursor: default;
+}
+.nodeMain {
+  flex: 1 1 320px;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.nodeText {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nodeTitleLine {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.nodeName {
+  font: 600 15px/1.2 var(--font-display);
+}
+.nodeHost {
+  font: 500 11px/1 var(--font-mono);
+  color: var(--text-2);
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.nodeSub {
+  font: 400 10px/1.5 var(--font-mono);
+  color: var(--text-5);
+  text-wrap: pretty;
+}
+.nodeSide {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-left: auto;
+}
+.nodeStatus {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: right;
+}
+.nodeStatusLabel {
+  font: 500 9px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+.nodePing {
+  font: 500 11px/1 var(--font-mono);
+  color: var(--text-4);
+}
+.theses {
+  display: flex;
+  gap: 26px;
+  flex-wrap: wrap;
+  padding-top: 22px;
+  font: 400 10px/1.6 var(--font-mono);
+  color: var(--text-6);
+  letter-spacing: 0.08em;
+}
+
+/* ================= Catalog ================= */
+.search {
+  flex: 1 1 260px;
+  max-width: 340px;
+}
+.filters {
+  display: flex;
+  gap: 8px;
+  padding-top: 18px;
+  flex-wrap: wrap;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-min), 1fr));
+  gap: var(--grid-gap);
+  padding-top: var(--grid-top);
+}
+.card2 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  animation: pv-rise 0.3s ease both;
+  transition: opacity 0.12s;
+}
+.card2:hover {
+  opacity: 0.82;
+}
+.cardText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cardTitle {
+  font: 600 14px/1.2 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.cardArtist {
+  font: 400 11px/1.3 var(--font-mono);
+  color: var(--text-3);
+}
+.cardMeta {
+  font: 400 10px/1.3 var(--font-mono);
+  color: var(--text-6);
+  letter-spacing: 0.08em;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  padding-top: var(--grid-top);
+  transition: opacity 0.12s;
+}
+.resultSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.artistList {
+  border-top: 1px solid var(--line);
+}
+.artistRow {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  padding: var(--row-pad-y) 14px;
+  border-bottom: 1px solid var(--line-row);
+  border-left: 2px solid transparent;
+}
+.artistRow:hover {
+  background: var(--row-hover);
+}
+.artistRowGo {
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  color: var(--text-4);
+}
+.artistRow:hover .artistRowGo {
+  color: var(--accent);
+}
+
+/* ================= Album ================= */
+.back {
+  display: inline-flex;
+  margin-bottom: 26px;
+}
+.albumLayout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 34px;
+  align-items: flex-start;
+}
+.albumAside {
+  flex: 1 1 220px;
+  max-width: 264px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.albumCoverCaption {
+  font-size: 10px;
+  line-height: 1.6;
+}
+.metaTable {
+  border: 1px solid var(--line-ctrl);
+}
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--line-meta);
+}
+.metaRow:last-child {
+  border-bottom: none;
+}
+.metaKey {
+  font: 400 10px/1 var(--font-mono);
+  color: var(--text-4);
+  letter-spacing: 0.1em;
+}
+.metaVal {
+  font: 500 10px/1 var(--font-mono);
+  color: var(--text-2);
+  text-align: right;
+}
+.albumMain {
+  flex: 1 1 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+.albumHead {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.artistLink {
+  align-self: flex-start;
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.16em;
+  color: var(--accent);
+}
+.artistLink:hover {
+  color: var(--text);
+}
+.albumTitle {
+  font: 700 46px/0.98 var(--font-display);
+  letter-spacing: -0.03em;
+}
+.albumMeta {
+  font: 400 12px/1 var(--font-mono);
+  color: var(--text-3);
+  letter-spacing: 0.08em;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.tracks {
+  border-top: 1px solid var(--line);
+}
+
+/* ================= Artist ================= */
+.artistHero {
+  position: relative;
+  height: 280px;
+  background: var(--ph-artist);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: flex-end;
+  padding: 0 44px 26px;
+}
+.heroCaption {
+  position: absolute;
+  top: 16px;
+  left: 44px;
+  font: 500 10px/1 var(--font-mono);
+  color: var(--text-5);
+  letter-spacing: 0.1em;
+}
+.heroBack {
+  position: absolute;
+  top: 16px;
+  right: 44px;
+}
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.artistName {
+  font: 800 68px/0.92 var(--font-display);
+  letter-spacing: -0.04em;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-bottom: 34px;
+}
+.stat {
+  background: var(--bg-panel);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.statKey {
+  font: 600 9px/1 var(--font-mono);
+  letter-spacing: 0.16em;
+  color: var(--text-4);
+}
+.statVal {
+  font: 600 22px/1 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.twoCols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 40px;
+  align-items: start;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.disco {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.discoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  cursor: pointer;
+  transition: opacity 0.12s;
+}
+.discoItem:hover {
+  opacity: 0.82;
+}
+.discoTitle {
+  font: 600 12px/1.2 var(--font-display);
+}
+.discoMeta {
+  font: 400 10px/1 var(--font-mono);
+  color: var(--text-4);
+}
+
+/* ================= Library ================= */
+.libHeader {
+  margin-bottom: 22px;
+}
+.libStats {
+  font: 400 11px/1.6 var(--font-mono);
+  color: var(--text-4);
+  text-align: right;
+}
+
+/* ================= Settings ================= */
+.settingsList {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line);
+  margin-top: 26px;
+  max-width: 720px;
+}
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 14px;
+  border-bottom: 1px solid var(--line-row);
+}
+.settingText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.settingName {
+  font: 600 15px/1.2 var(--font-display);
+}
+.segmented {
+  display: flex;
+  border: 1px solid var(--line-ctrl);
+}
+.segment {
+  padding: 7px 11px;
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  color: var(--text-3);
+}
+.segment + .segment {
+  border-left: 1px solid var(--line-ctrl);
+}
+.segment:hover {
+  color: var(--text);
+}
+.segmentOn,
+.segmentOn:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* ================= Config error (веб) ================= */
+.configError {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 56px 60px;
+  background: var(--bg-panel);
+}
+.configErrorBody {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 520px;
+  margin-bottom: auto;
+  margin-top: auto;
+}
+.configErrorTitle {
+  font: 700 52px/0.98 var(--font-display);
+  letter-spacing: -0.03em;
+}
+.code {
+  font: 500 13px/1 var(--font-mono);
+  color: var(--text);
+  user-select: text;
+}
+
+/* ================= Web node (экран входа веб-версии) ================= */
+.webNode {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 12px;
+  border: 1px solid var(--line-input);
+  background: var(--bg-input);
+  min-width: 0;
+}
+.webNodeName {
+  font: 500 12px/1 var(--font-mono);
+  color: var(--text-bright);
+}
+.webNodeHost {
+  font: 400 10px/1 var(--font-mono);
+  color: var(--text-6);
+  margin-left: auto;
+}

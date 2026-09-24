@@ -1,0 +1,12 @@
+# Веб-версия отдельно от бэкенда: docker compose up -d --build
+# Узел задаётся в .env (см. .env.example). TLS — на обратном прокси перед контейнером.
+services:
+  web:
+    build: .
+    image: privy-stream-web
+    ports:
+      - "${PRIVY_WEB_PORT:-8081}:80"
+    environment:
+      PRIVY_NODE_URL: ${PRIVY_NODE_URL:?укажи адрес узла в PRIVY_NODE_URL (.env)}
+      PRIVY_NODE_NAME: ${PRIVY_NODE_NAME:-}
+    restart: unless-stopped

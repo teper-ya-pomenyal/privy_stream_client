@@ -1,0 +1,465 @@
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  overflow: hidden;
+}
+.body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+.content {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+/* ---------- Header ---------- */
+.header {
+  height: var(--header-h);
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 0 18px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-panel);
+}
+.headerLeft,
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-width: 0;
+}
+.headerRight {
+  gap: 10px;
+}
+.crumbs {
+  font: 400 10px/1 var(--font-mono);
+  color: var(--text-6);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+.nodeChip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--line-input);
+  cursor: pointer;
+  min-width: 0;
+}
+.nodeChip:hover {
+  border-color: var(--line-hover);
+}
+.nodeChipStatic,
+.nodeChipStatic:hover {
+  cursor: default;
+  border-color: var(--line-input);
+}
+.nodeChipHost {
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  color: var(--text-2);
+}
+.nodeChipPing {
+  font: 400 10px/1 var(--font-mono);
+  color: var(--text-6);
+  white-space: nowrap;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  width: var(--sidebar-w);
+  flex: none;
+  border-right: 1px solid var(--line);
+  background: var(--bg-panel);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 18px 0 16px;
+}
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.navTitle {
+  padding: 0 18px 10px;
+}
+.navItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--nav-pad-y) 18px;
+  color: var(--text-3);
+  border-left: 2px solid transparent;
+  text-decoration: none;
+}
+.navItem:hover {
+  color: var(--text);
+  background: var(--bg-nav-hover);
+}
+.navItem.active {
+  color: var(--text-bright);
+  background: var(--bg-active);
+  border-left-color: var(--accent);
+}
+.navLabel {
+  font: 600 12px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+}
+.navCount {
+  font: 400 10px/1 var(--font-mono);
+  color: var(--text-6);
+}
+.sideFoot {
+  padding: 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.rule {
+  height: 1px;
+  background: var(--line);
+}
+.kvList {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.kv {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font: 400 10px/1 var(--font-mono);
+  color: var(--text-4);
+}
+.kv > :last-child {
+  color: var(--text-2);
+  min-width: 0;
+}
+.switchNode {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding-top: 2px;
+  font: 600 9px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  color: var(--text-3);
+}
+.switchNode:hover {
+  color: var(--text);
+}
+
+/* ---------- Player bar ---------- */
+.player {
+  flex: none;
+  height: var(--player-h);
+  border-top: 1px solid var(--line-ctrl);
+  background: var(--bg-player);
+  display: grid;
+  grid-template-columns: 264px 1fr 264px;
+  align-items: center;
+  gap: 18px;
+  padding: 0 18px;
+}
+.nowPlaying {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  cursor: pointer;
+}
+.thumb {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  background: var(--ph-thumb);
+  border: 1px solid var(--line-input);
+}
+.nowText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.nowTitle {
+  font: 600 13px/1.2 var(--font-display);
+}
+.nowSub {
+  font: 400 10px/1 var(--font-mono);
+  color: var(--text-4);
+}
+.center {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+.transport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.skip {
+  font: 500 12px/1 var(--font-mono);
+  color: var(--text-3);
+}
+.skip:hover {
+  color: var(--text);
+}
+.playBtn {
+  width: 34px;
+  height: 34px;
+  background: var(--accent);
+  color: var(--on-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 12px/1 var(--font-display);
+}
+.playBtn:hover {
+  background: var(--accent-hover);
+}
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.time {
+  font: 500 10px/1 var(--font-mono);
+  color: var(--text-3);
+  width: 36px;
+  flex: none;
+}
+.progress {
+  flex: 1;
+  height: 4px;
+  background: var(--line-ctrl);
+  cursor: pointer;
+  position: relative;
+}
+/* Увеличенная зона клика вокруг тонкой полосы */
+.progress::before {
+  content: '';
+  position: absolute;
+  inset: -6px 0;
+}
+.progressFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--accent);
+}
+.right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+}
+.meter {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 22px;
+}
+.meterBar {
+  width: 3px;
+  transition: height 0.35s ease;
+}
+.spec {
+  font: 600 9px/1.5 var(--font-mono);
+  color: var(--text-4);
+  letter-spacing: 0.12em;
+  text-align: right;
+}
+
+/* ---------- Fullscreen player ---------- */
+.full {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-full);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  animation: pv-rise 0.25s ease both;
+}
+.fullBar {
+  flex: none;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 26px;
+  border-bottom: 1px solid var(--line);
+}
+.fullBody {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+}
+.fullMain {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+  padding: 40px 56px;
+  min-width: 0;
+  overflow-y: auto;
+}
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  align-items: flex-end;
+}
+.heroCover {
+  width: 210px;
+  height: 210px;
+  flex: none;
+  border-color: var(--line-input);
+}
+.heroText {
+  flex: 1 1 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.heroRelease {
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.16em;
+  color: var(--text-3);
+}
+.heroTitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 3.6vw, 54px);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+.heroArtist {
+  font: 500 14px/1 var(--font-mono);
+  color: var(--accent);
+}
+.waveWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.wave {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 84px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 2px;
+  cursor: pointer;
+}
+.waveBar {
+  flex: 1;
+  transition: background 0.2s;
+}
+.waveMeta {
+  display: flex;
+  justify-content: space-between;
+  font: 500 11px/1 var(--font-mono);
+  color: var(--text-3);
+}
+.fullTransport {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.fullPlay {
+  width: 62px;
+  height: 62px;
+  background: var(--accent);
+  color: var(--on-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 20px/1 var(--font-display);
+}
+.fullPlay:hover {
+  background: var(--accent-hover);
+}
+.queue {
+  border-left: 1px solid var(--line);
+  background: var(--bg-queue);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.queueHead {
+  flex: none;
+  padding: 18px 22px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.queueList {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+.queueRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 22px;
+  border-bottom: 1px solid var(--line-queue);
+}
+.queueRow:hover {
+  background: var(--row-hover);
+}
+.queueRow.playing {
+  background: var(--accent-bg);
+}
+.qNum {
+  font: 500 10px/1 var(--font-mono);
+  color: var(--text-5);
+  width: 20px;
+  flex: none;
+}
+.playing .qNum {
+  color: var(--accent);
+}
+.qText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.qTitle {
+  font: 600 12px/1.2 var(--font-display);
+  color: var(--text-2);
+}
+.playing .qTitle {
+  color: var(--text-bright);
+}
+.qArtist {
+  font: 400 10px/1 var(--font-mono);
+  color: var(--text-5);
+}
+.qDur {
+  font: 500 10px/1 var(--font-mono);
+  color: var(--text-4);
+}
+.queueFoot {
+  flex: none;
+  padding: 14px 22px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}

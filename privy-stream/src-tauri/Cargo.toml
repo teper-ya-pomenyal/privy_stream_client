@@ -1,0 +1,21 @@
+[package]
+name = "privy-stream"
+version = "0.4.1"
+description = "privy_stream — десктопный клиент федеративного стриминга"
+edition = "2021"
+
+[lib]
+# Суффикс _lib — чтобы имя библиотеки не конфликтовало с бинарём на Windows.
+name = "privy_stream_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+keyring = { version = "3", features = ["apple-native", "windows-native", "sync-secret-service"] }
+# Список узлов — JSON-файл в app data dir (nodes.json)
+tauri-plugin-store = "2"

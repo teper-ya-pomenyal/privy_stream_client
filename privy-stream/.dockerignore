@@ -1,0 +1,7 @@
+node_modules
+dist
+src-tauri
+docker-compose.yml
+.env
+*.log
+.DS_Store

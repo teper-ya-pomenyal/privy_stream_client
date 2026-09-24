@@ -1,0 +1,132 @@
+@import '@fontsource-variable/manrope/wght.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
+@import '@fontsource/ibm-plex-mono/700.css';
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  user-select: none;
+}
+
+input {
+  font-family: inherit;
+  user-select: text;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-align: inherit;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a2e;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-player);
+}
+
+@keyframes pv-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.15;
+  }
+}
+
+@keyframes pv-rise {
+  0% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pv-shimmer {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Моно-метки — всегда капсом, трекинг по роли */
+.t-eyebrow {
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+.t-label {
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.16em;
+  color: var(--text-4);
+}
+.t-section {
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.18em;
+  color: var(--text-6);
+}
+.t-h2 {
+  font: 700 34px/1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Фокус только для клавиатуры, в цвет акцента вместо системного синего */
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+input:focus-visible {
+  outline: none;
+}

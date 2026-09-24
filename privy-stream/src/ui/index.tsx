@@ -113,18 +113,32 @@ function Select({
   );
 }
 
-/** Дата в порядке ДД.ММ.ГГГГ — три выпадающих списка: день, месяц, год. */
-export function DateField({ label, value, onChange }: { label: string; value: DateParts; onChange: (v: DateParts) => void }) {
-  const thisYear = new Date().getFullYear();
+/** Сколько месяцев и дней можно выбрать при уже выбранных частях: будущих дат в списках нет. */
+function dateLimits({ month, year }: DateParts, today: Date) {
+  const thisYear = year === String(today.getFullYear());
+  const maxMonth = thisYear ? today.getMonth() + 1 : 12;
   // Пока месяц не выбран — 31 день; год нужен только для 29 февраля.
-  const maxDay = value.month ? daysIn(Number(value.month), Number(value.year) || 2000) : 31;
+  let maxDay = month ? daysIn(Number(month), Number(year) || 2000) : 31;
+  if (thisYear && Number(month) === maxMonth) maxDay = today.getDate();
+  return { maxMonth, maxDay };
+}
+
+/** Дата в порядке ДД.ММ.ГГГГ — три выпадающих списка: день, месяц, год. Будущую дату выбрать нельзя. */
+export function DateField({ label, value, onChange }: { label: string; value: DateParts; onChange: (v: DateParts) => void }) {
+  const today = new Date();
+  const thisYear = today.getFullYear();
+  const { maxMonth, maxDay } = dateLimits(value, today);
 
   const set = (patch: Partial<DateParts>) => {
     const next = { ...value, ...patch };
-    // 31 → 30 при смене месяца, 29 февраля → 28 в невисокосный год.
-    if (next.day && next.month) {
-      const max = daysIn(Number(next.month), Number(next.year) || 2000);
-      if (Number(next.day) > max) next.day = String(max);
+    const lim = dateLimits(next, today);
+    // Выбор года сделал месяц или день будущим — сбрасываем, чтобы это было видно.
+    if (Number(next.month) > lim.maxMonth) next.month = next.day = '';
+    else if (next.day && next.month) {
+      const monthDays = daysIn(Number(next.month), Number(next.year) || 2000);
+      // 31 → 30 при смене месяца, 29 февраля → 28 в невисокосный год.
+      if (Number(next.day) > monthDays) next.day = String(monthDays);
+      else if (Number(next.day) > lim.maxDay) next.day = '';
     }
     onChange(next);
   };
@@ -145,7 +159,7 @@ export function DateField({ label, value, onChange }: { label: string; value: Da
           placeholder="месяц"
           value={value.month}
           onChange={(e) => set({ month: e.target.value })}
-          options={MONTHS.map((m, i) => [String(i + 1), m])}
+          options={MONTHS.slice(0, maxMonth).map((m, i) => [String(i + 1), m])}
         />
         <Select
           aria-label="Год"

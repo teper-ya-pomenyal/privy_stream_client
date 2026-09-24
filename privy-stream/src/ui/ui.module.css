@@ -133,6 +133,40 @@
 .input:focus {
   border-color: var(--line-hover);
 }
+
+/* Выпадающие списки даты: день · месяц · год */
+.dateRow {
+  display: grid;
+  grid-template-columns: 0.8fr 1.5fr 1fr;
+  gap: 7px;
+}
+.selectWrap {
+  position: relative;
+  min-width: 0;
+}
+.selectWrap::after {
+  content: '▾';
+  position: absolute;
+  right: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 500 11px/1 var(--font-mono);
+  color: var(--text-4);
+  pointer-events: none;
+}
+.select {
+  appearance: none;
+  padding-right: 26px;
+  cursor: pointer;
+  text-overflow: ellipsis;
+}
+.selectEmpty {
+  color: var(--text-6);
+}
+.select option {
+  background: var(--bg-card);
+  color: var(--text);
+}
 .input::placeholder,
 .bareInput::placeholder {
   color: var(--text-6);

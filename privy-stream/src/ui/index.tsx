@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, CSSProperties, InputHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, CSSProperties, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from 'react';
 import type { NodeInfo, Track } from '../api';
 import { fmtTime, trackNum } from '../lib/format';
 import { useCurrentTrack } from '../store/player';
@@ -40,6 +40,88 @@ export function Field({ label, ...input }: InputHTMLAttributes<HTMLInputElement>
       <span className="t-label">{label}</span>
       <input className={s.input} spellCheck={false} autoComplete="off" {...input} />
     </label>
+  );
+}
+
+const MONTHS = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
+const range = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i);
+const daysIn = (month: number, year: number) => new Date(year, month, 0).getDate();
+
+/** Дата по частям: пустая строка — часть ещё не выбрана. Месяц 1–12. */
+export type DateParts = { day: string; month: string; year: string };
+
+/** YYYY-MM-DD для API или null, пока дата не выбрана целиком. */
+export function isoDate({ day, month, year }: DateParts): string | null {
+  if (!day || !month || !year) return null;
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+}
+
+function Select({
+  placeholder,
+  options,
+  ...select
+}: SelectHTMLAttributes<HTMLSelectElement> & { placeholder: string; options: [string, string][] }) {
+  return (
+    <div className={s.selectWrap}>
+      <select className={cx(s.input, s.select, !select.value && s.selectEmpty)} {...select}>
+        <option value="" disabled>
+          {placeholder}
+        </option>
+        {options.map(([value, label]) => (
+          <option key={value} value={value}>
+            {label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+/** Дата в порядке ДД.ММ.ГГГГ — три выпадающих списка: день, месяц, год. */
+export function DateField({ label, value, onChange }: { label: string; value: DateParts; onChange: (v: DateParts) => void }) {
+  const thisYear = new Date().getFullYear();
+  // Пока месяц не выбран — 31 день; год нужен только для 29 февраля.
+  const maxDay = value.month ? daysIn(Number(value.month), Number(value.year) || 2000) : 31;
+
+  const set = (patch: Partial<DateParts>) => {
+    const next = { ...value, ...patch };
+    // 31 → 30 при смене месяца, 29 февраля → 28 в невисокосный год.
+    if (next.day && next.month) {
+      const max = daysIn(Number(next.month), Number(next.year) || 2000);
+      if (Number(next.day) > max) next.day = String(max);
+    }
+    onChange(next);
+  };
+
+  return (
+    <div className={s.field}>
+      <span className="t-label">{label}</span>
+      <div className={s.dateRow}>
+        <Select
+          aria-label="День"
+          placeholder="день"
+          value={value.day}
+          onChange={(e) => set({ day: e.target.value })}
+          options={range(1, maxDay).map((d) => [String(d), String(d).padStart(2, '0')])}
+        />
+        <Select
+          aria-label="Месяц"
+          placeholder="месяц"
+          value={value.month}
+          onChange={(e) => set({ month: e.target.value })}
+          options={MONTHS.map((m, i) => [String(i + 1), m])}
+        />
+        <Select
+          aria-label="Год"
+          placeholder="год"
+          value={value.year}
+          onChange={(e) => set({ year: e.target.value })}
+          options={range(thisYear - 100, thisYear)
+            .reverse()
+            .map((y) => [String(y), String(y)])}
+        />
+      </div>
+    </div>
   );
 }
 

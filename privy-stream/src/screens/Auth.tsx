@@ -4,7 +4,21 @@ import { useMobile } from '../lib/useMobile';
 import { IS_WEB } from '../platform/mode';
 import { useActiveNodeOrNull, useServers } from '../store/servers';
 import { useSession } from '../store/session';
-import { Button, cx, ErrorNote, Field, hostLabel, Logo, NODE_STATUS, nodeState, PrefixedInput, StatusDot } from '../ui';
+import {
+  Button,
+  cx,
+  DateField,
+  type DateParts,
+  ErrorNote,
+  Field,
+  hostLabel,
+  isoDate,
+  Logo,
+  NODE_STATUS,
+  nodeState,
+  PrefixedInput,
+  StatusDot,
+} from '../ui';
 import s from './screens.module.css';
 
 type Mode = 'login' | 'register';
@@ -19,7 +33,7 @@ export function Auth() {
   const [mode, setMode] = useState<Mode>('login');
   const [login, setLogin] = useState('');
   const [pass, setPass] = useState('');
-  const [birth, setBirth] = useState('');
+  const [birth, setBirth] = useState<DateParts>({ day: '', month: '', year: '' });
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   // Первый запуск без узлов — форма добавления сразу открыта.
@@ -46,11 +60,12 @@ export function Auth() {
     // Проверки из контракта API v1 (RegisterRequest / AuthRequest) — до запроса.
     if (!login.trim()) return setErr('400 · укажи логин');
     if (reg && pass.length < 8) return setErr('400 · пароль: минимум 8 символов');
-    if (reg && !/^\d{4}-\d{2}-\d{2}$/.test(birth)) return setErr('400 · birth_date: ожидается YYYY-MM-DD');
+    const birthDate = isoDate(birth);
+    if (reg && !birthDate) return setErr('400 · дата рождения: выбери день, месяц и год');
     setBusy(true);
     try {
       const tokens = reg
-        ? await nodeApi.register(node.host, { login, password: pass, birthDate: birth })
+        ? await nodeApi.register(node.host, { login, password: pass, birthDate: birthDate! })
         : await nodeApi.login(node.host, { login, password: pass });
       setPass('');
       await signIn(node.host, tokens);
@@ -130,7 +145,16 @@ export function Auth() {
 
             <Field label="ЛОГИН" value={login} onChange={edit(setLogin)} placeholder="user_name" autoFocus={!noNodes && !mobile} />
             <Field label="ПАРОЛЬ" type="password" value={pass} onChange={edit(setPass)} placeholder="••••••••••" />
-            {reg && <Field label="ДАТА РОЖДЕНИЯ" value={birth} onChange={edit(setBirth)} placeholder="1994-05-17" />}
+            {reg && (
+              <DateField
+                label="ДАТА РОЖДЕНИЯ"
+                value={birth}
+                onChange={(v) => {
+                  setBirth(v);
+                  setErr('');
+                }}
+              />
+            )}
 
             <ErrorNote>{shownError}</ErrorNote>
 
